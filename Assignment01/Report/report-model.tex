@@ -16,7 +16,7 @@
 
 \IEEEoverridecommandlockouts
 % The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
-\usepackage[portuges,brazil,english]{babel}
+\usepackage[portuguese, english]{babel}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{textcomp}
@@ -28,41 +28,72 @@
 
 \author{\IEEEauthorblockN{Matheus Mortatti Diamantino}
 \IEEEauthorblockA{
-156740 \\
+RA 156740 \\
 matheusmortatti@gmail.com}
 \and
 \IEEEauthorblockN{Jos\'{e} Renato Vicente}
 \IEEEauthorblockA{
-RA \\
-email address}}
+RA 155984\\
+joserenatovi@gmail.com}}
 
 \maketitle
 
 \section{Introduction}
 
-The introduction and motivation of the work.
-
-Some directions for the paper:
-
-\begin{itemize}
-	\item Figures and graphics are encouraged for making the
-	report richer.
-	\item {\bf The sections proposed here are not hard-constrained}. It means you can propose other sections as well as change the existing ones.
-	\item Please number citations consecutively within brackets~\cite{b1}.
-\end{itemize}
+Neste projeto, foi feito um estudo de predição de preço de diamantes. Para isso, foi utilizada uma base de dados com 54000 diamantes, em que são apresentados seus preços e nove features.
 
 \section{Activities}
 
-The state-of-the-art research (about prior work for solving the same problem).
+Regressão Linear é o método mais básico de Machine Learning utilizado para predizer o valor de uma variável dependente baseado em valores de variáveis independentes.
+
+A regressão linear é chamada linear porque se considera que a relação da resposta às variáveis é uma função linear de alguns parâmetros.
+Desta forma, dado um vetor Theta de tamanho igual ao número de features, cujo valor queremos determinar, temos que:
+
+Preço_Alvo_Esperado = Theta * X
+
+Em que X é um vetor com os valores das features para um dado diamante, cujo preço queremos determinar.
+
+Para encontrar esse valor de Theta, utilizaremos alguns métodos e compararemos os resultados obtidos com cada um.
+
+O primeiro método a ser analisado é o Gradient Descent. Neste método, utilizando nossa base de dados de treino, tentaremos encontrar o vetor Theta de modo que nosso preço alvo esperado fique o mais próximo possível do resultado real, cujo valor já sabemos.
+
 
 \section{Proposed Solutions}
+Normalização de Features:
 
-The proposed solutions for the selected problem.
+Para entender melhor como cada feature influencia o preço de um diamante, plotamos nove gráficos de preço x valor da feature:
+
+#### GRAFICOS ####
+
+Analisando esses gráficos, podemos perceber que algumas features parecem ter maior influencia sobre o preço do que outras. Também podemos perceber que algumas features parecem ter influencia mais próxima de uma função quadrática do que linear sobre o preço do diamante. Na seção de experimentos, mostraremos o que foi feito com relação à essas diferenças.
+
+Já que alguns valores das features encontram-se na casa das unidades e outros das centenas, decidimos fazer a Normalização das features para garantir resultados o amis precisos possśveis. Tal normalização foi feita da seguinte forma:
+
+#### FORMULA ####
+
+
+
+Regressão Linear:
+
+Para a nossa primeira abordagem do problema, utilizamos uma regressão linear da forma: (FORMULA BASICA DA REGRESSAO LINEAR).
+Para descidir que Learning Rate utilizar e quantas iterações deveríamos ter, calculamos o erro ao longo da execução do algoritmo pela fórmula:
+
+#### FORMULA DO ERRO ####
+
+
 
 \section{Experiments and Discussion}
 
-The experiments carried out and the obtained
-results.
+Com o intuito de analisar o impacto de difentes algoritmos e inputs nas respostas fiansi, fizemos diversos experimentos.
+Foram testados os seguintes algoritmos:
+Gradient Descent nas versões Batch, Mini Batch e Stochastic
+Normal Equation
+Além disso, testamos os inputs:
+Learning Rates
+Parada por Numero de iterações e por Convergência
+
+
+
 
 \section{Conclusions and Future Work}
 
