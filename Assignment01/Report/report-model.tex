@@ -40,36 +40,87 @@ joserenatovi@gmail.com}}
 
 \section{Introduction}
 
-Neste projeto, foi feito um estudo de predição de preço de diamantes. Para isso, foi utilizada uma base de dados com 54000 diamantes, em que são apresentados seus preços e nove features.
+Este projeto teve como intuito o estudo prático do método de regressão linear em Machine Learning. Foram utilizado os algoritmos de \textit{Gradient Descent} conhecidos como \textit{Stochastic, Batch, Mini Batch e Equação Normal}, de modo a compara-los em termos de complexidade e acurácia.
+
+Foi feito um estudo de predição de preço de diamantes, utilizando uma base de dados com 54000 exemplos, em que são apresentados seus preços e nove features como tamanho, cor e número de quilates.
 
 \section{Activities}
 
-Regressão Linear é o método mais básico de Machine Learning utilizado para predizer o valor de uma variável dependente baseado em valores de variáveis independentes.
+\subsection{Regressão Linear}
 
-A regressão linear é chamada linear porque se considera que a relação da resposta às variáveis é uma função linear de alguns parâmetros.
-Desta forma, dado um vetor Theta de tamanho igual ao número de features, cujo valor queremos determinar, temos que:
+Regressão Linear é um método muito conhecido de Machine Learning, utilizado para predizer o valor de uma variável dependente baseado em valores de variáveis independentes. Essa regressão é chamada linear porque se considera que a relação da resposta às variáveis é uma função linear de alguns parâmetros. Desta forma, dado um vetor Theta de tamanho igual ao número de features, cujo valor queremos determinar, temos que:
 
-Preço_Alvo_Esperado = Theta * X
+\begin{equation} \label{eq:hx}
+PreçoAlvoEsperado = \sum_{i=1}^{m} \theta_{i}X_{i} = h_{\theta}(x)
+\end{equation}
 
-Em que X é um vetor com os valores das features para um dado diamante, cujo preço queremos determinar.
+Em que X é um vetor com os valores das features para um dado diamante, cujo preço queremos determinar.Para encontrar esse valor de Theta, utilizaremos alguns algoritmos e compararemos os resultados obtidos com cada um.
 
-Para encontrar esse valor de Theta, utilizaremos alguns métodos e compararemos os resultados obtidos com cada um.
+Cada algoritmo utilizado é baseado no método de \textit{Descrida de Gradiente (ou Gradient Descent)}. Este é um método utilizado para achar o ponto mínimo de uma função, aproximando gradativamente seu valor até um ponto quando não é possível ser diminuido mais (i.e. a derivada da função neste ponto é zero). Este método consegue apenas achar mínimos locais e, com isso, não é garantido que o resultado obtido é o melhor para o dado problema.
 
-O primeiro método a ser analisado é o Gradient Descent. Neste método, utilizando nossa base de dados de treino, tentaremos encontrar o vetor Theta de modo que nosso preço alvo esperado fique o mais próximo possível do resultado real, cujo valor já sabemos.
+Para medirmos a eficácia do algoritmo, utilizamos uma \textit{Função de Custo} que nos diz o quão perto do resultado desejado estamos, dado um conjunto de dados. Esta função é definida por:
 
+\begin{equation} \label{eq:cost_function}
+J(\theta) = \dfrac{1}{2m} \sum_{i=1}^{m}(h_{\theta}(x^{i}) - y^{i})^2
+\end{equation}
+
+Como queremos minimizar a função de custo, queremos que cada passo da nossa descida de gradiente se aproxime mais do mínimo local. Para extrairmos a direção que temos que ir, utilizamos a derivada da função de custo:
+
+\begin{equation} \label{eq:cost_derivative}
+\dfrac{\partial J}{\partial \theta_{j}} = \dfrac{1}{m} \sum_{i=1}^{m}(h_{\theta}(x^{i}) - y^{i}) x^{i}
+\end{equation}
+
+Logo, para aproximarmos os valores de $\theta$ de modo a nos aproximar do mínimo local, utilizamos a fórmula
+
+\begin{equation} \label{eq:gradient_descent}
+\theta_{j} := \theta_{j} - \alpha \dfrac{1}{m} \sum_{i=1}^{m}(h_{\theta}(x^{i}) - y^{i}) x^{i}
+\end{equation}
+
+, onde $0 \leq j \leq m$, $x_{0} = 1$ e $\alpha$ é o que chamamos de \textit{Learning Rate} que define o quão agressivamente tentaremos nos aproximar do mínimo. Este método de descida de gradiente é chamada de \textit{Batch Gradient Descent}. A seguir, veremos três outras variações deste algoritmo
+
+\paragraph{Stochastic Gradient Descent}
+
+Neste método, utiliza-se apenas um exemplo de treino para cada passo da descida de gradiente. Deste modo, a equação~\ref{eq:gradient_descent} se transforma em
+
+\begin{equation} \label{eq:stochastic_descent}
+\theta_{j} := \theta_{j} - \alpha(h_{\theta}(x^{i}) - y^{i}) x^{i}
+\end{equation}
+
+Utiliza-se este método quando procura-se rapidez de execução. Contudo, um ponto negativo deste método é que, como usamos como amostra apenas um exemplo de treino, um passo pode nos levar a um custo mais alto. Como o número de iterações é alta, porém, o método converge ao mínimo e mais eficientemente do que o \textit{Batch} até um certo limite.
+
+\paragraph{Mini Batch Gradient Descent}
+
+Para obtermos um resultado balanceado, utiliza-se uma mistura dos métodos \textit{Batch} e \textit{Stochastic}, em que define-se um tamanho para o lote de exemplos de treino que serão utilizados para atualizar cara $\theta$.
+
+\begin{equation} \label{eq:stochastic_descent}
+\theta_{j} := \theta_{j} - \alpha \dfrac{1}{m} \sum_{i=k}^{k+b-1}(h_{\theta}(x^{i}) - y^{i}) x^{i}
+\end{equation}
+
+, onde $b$ é o tamanho do lote, $k = 0, b, 2b, ..., m-1$.
+
+\paragraph{Equação Normal}
+
+Para a regressão linear, é possível derivar uma fórmula direta para o ponto de mínimo local que desejamos. Para isso, utilizamos manipulações matriciais na forma
+
+\begin{equation} \label{eq:normal}
+\theta = (X^{T}X)^{-1}X^{T}y
+\end{equation}
+
+, onde $X$ é a matriz de features, $y$ é a matriz dos dados que queremos prever e $\theta$ é a matriz dos coeficientes de $h(X)$.
 
 \section{Proposed Solutions}
-Normalização de Features:
+
+Normalização de Features
 
 Para entender melhor como cada feature influencia o preço de um diamante, plotamos nove gráficos de preço x valor da feature:
 
-#### GRAFICOS ####
+% #### GRAFICOS ####
 
 Analisando esses gráficos, podemos perceber que algumas features parecem ter maior influencia sobre o preço do que outras. Também podemos perceber que algumas features parecem ter influencia mais próxima de uma função quadrática do que linear sobre o preço do diamante. Na seção de experimentos, mostraremos o que foi feito com relação à essas diferenças.
 
 Já que alguns valores das features encontram-se na casa das unidades e outros das centenas, decidimos fazer a Normalização das features para garantir resultados o amis precisos possśveis. Tal normalização foi feita da seguinte forma:
 
-#### FORMULA ####
+% #### FORMULA ####
 
 
 
@@ -78,13 +129,13 @@ Regressão Linear:
 Para a nossa primeira abordagem do problema, utilizamos uma regressão linear da forma: (FORMULA BASICA DA REGRESSAO LINEAR).
 Para descidir que Learning Rate utilizar e quantas iterações deveríamos ter, calculamos o erro ao longo da execução do algoritmo pela fórmula:
 
-#### FORMULA DO ERRO ####
+% #### FORMULA DO ERRO ####
 
 
 
 \section{Experiments and Discussion}
 
-Com o intuito de analisar o impacto de difentes algoritmos e inputs nas respostas fiansi, fizemos diversos experimentos.
+Com o intuito de analisar o impacto de difentes algoritmos e inputs nas respostas finais, fizemos diversos experimentos.
 Foram testados os seguintes algoritmos:
 Gradient Descent nas versões Batch, Mini Batch e Stochastic
 Normal Equation
@@ -97,7 +148,7 @@ Parada por Numero de iterações e por Convergência
 
 \section{Conclusions and Future Work}
 
-The main conclusions of the work as well as some future directions for other people interested in continuing this work.
+The main conclusions of the work as well as some future directions for other people interested in continuing this work. ~\cite{b1}
 
 \bibliographystyle{IEEEtran}
 \bibliography{biblio-link,biblio}
