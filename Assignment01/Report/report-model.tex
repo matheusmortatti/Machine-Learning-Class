@@ -92,7 +92,7 @@ Utiliza-se este método quando procura-se rapidez de execução. Contudo, um pon
 
 Para obtermos um resultado balanceado, utiliza-se uma mistura dos métodos \textit{Batch} e \textit{Stochastic}, em que define-se um tamanho para o lote de exemplos de treino que serão utilizados para atualizar cara $\theta$.
 
-\begin{equation} \label{eq:stochastic_descent}
+\begin{equation} \label{eq:minibatch_descent}
 \theta_{j} := \theta_{j} - \alpha \dfrac{1}{m} \sum_{i=k}^{k+b-1}(h_{\theta}(x^{i}) - y^{i}) x^{i}
 \end{equation}
 
@@ -108,41 +108,61 @@ Para a regressão linear, é possível derivar uma fórmula direta para o ponto 
 
 , onde $X$ é a matriz de features, $y$ é a matriz dos dados que queremos prever e $\theta$ é a matriz dos coeficientes de $h(X)$.
 
+\subsection{Normalização de Features}
+
+Como cada feature tem seu valor em uma escala diferente (i.e. algumas estão na ordem de milhares e outras na ordem de centenas), o processo de descida do gradiente poderá acontecer de forma lenta. Isso se dá pelo fato de que a atualização dos $\theta$s não ocorrerá de forma uniforme entre as features, já que a distância de um dado $\theta_{i}$ a seu valor esperado pode ser maior do que de outro $\theta_{j}, j \neq i$. Assim, realizamos o que é chamado de \textit{Normalização de Features}, onde colocamos todas as features $x_{i}$ em um valor entre $ \-0.5 \leq x_{i} \leq 0.5$. Isso é feito através da fórmula:
+
+\begin{equation} \label{eq:feature_norm}
+x_{i} = \dfrac{x_{i} - \dfrac{size(x_{i})}{2}}{size(x_{i})}
+\end{equation}
+
+\subsection{Transformação de Features}
+
+Em alguns casos, podemos ter features que não possuem um valor no domínio dos números reais. Por exemplo, uma feature pode representar a cor de um dado elemento. Deste modo, é necessário realizar uma transformação de tais features para o domínio dos reais. Para realizar tal transformação, criamos uma nova feature para cada possível valor da feature que queremos transformar, de modo que, se para o exemplo de dado $e_{i}$ temos que esta feature possui um valor $x_{j}$, a nova feature correspondente a $x_{j}$ terá o valor $1$ e as demais features criadas terão o valor $0$. Tomemos como exemplo uma feature de Cor que pode receber os valores \textit{Azul, Amarelo, Vermelho e Verde}. Assim, o resultado da transformação acontecerá da seguinte forma:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Feature $x_{i}$ & Azul & Amarelo & Vermelho & Verde \\ \hline
+Azul            & 1    & 0       & 0        & 0     \\ \hline
+Amarelo         & 0    & 1       & 0        & 0     \\ \hline
+Vermelho        & 0    & 0       & 1        & 0     \\ \hline
+Verde           & 0    & 0       & 0        & 1     \\ \hline
+\end{tabular}
+\end{table}
+
+Onde cada coluna representa a nova feature criada e cada linha representa o valor original da feature $x_{i}$.
+
+\subsection{Regularização}
+
+Regularização é um método utilizado para \textit{evitar} overfitting dos dados. É relizado de forma a penalizar os valores de $\theta$ para que estes mantenham valores pequenos, sendo menos propenso ao overfitting. Isto é feito na forma de um novo parâmetro $\lambda$ que definirá o quanto cada $\theta$ será penalizado:
+
+\begin{equation} \label{eq:regularization}
+\theta_{j} := \theta_{j} * (1 - \lambda * \dfrac{\alpha}{m}) - \alpha \dfrac{1}{m} \sum_{i=1}^{m}(h_{\theta}(x^{i}) - y^{i}) x^{i}
+\end{equation}
+
+Este valor deve ser modificado de forma a melhorar o resultado final. Se o valor for muito alto, a influência da regularização pode ser negativa, criando um aumento no erro final. Se muito baixo, não terá o efeito desejado. Vale mencionar que a regularização na equação normal se da pela forma
+
+\begin{equation} \label{eq:normal_reg}
+\theta = (X^{T}X + \lambda I)^{-1}X^{T}y
+\end{equation}
+
+, onde $I$ é a matriz identidade.
+
 \section{Proposed Solutions}
-
-Normalização de Features
-
-Para entender melhor como cada feature influencia o preço de um diamante, plotamos nove gráficos de preço x valor da feature:
-
-% #### GRAFICOS ####
-
-Analisando esses gráficos, podemos perceber que algumas features parecem ter maior influencia sobre o preço do que outras. Também podemos perceber que algumas features parecem ter influencia mais próxima de uma função quadrática do que linear sobre o preço do diamante. Na seção de experimentos, mostraremos o que foi feito com relação à essas diferenças.
-
-Já que alguns valores das features encontram-se na casa das unidades e outros das centenas, decidimos fazer a Normalização das features para garantir resultados o amis precisos possśveis. Tal normalização foi feita da seguinte forma:
-
-% #### FORMULA ####
-
-
-
-Regressão Linear:
-
-Para a nossa primeira abordagem do problema, utilizamos uma regressão linear da forma: (FORMULA BASICA DA REGRESSAO LINEAR).
-Para descidir que Learning Rate utilizar e quantas iterações deveríamos ter, calculamos o erro ao longo da execução do algoritmo pela fórmula:
-
-% #### FORMULA DO ERRO ####
 
 
 
 \section{Experiments and Discussion}
 
-Com o intuito de analisar o impacto de difentes algoritmos e inputs nas respostas finais, fizemos diversos experimentos.
-Foram testados os seguintes algoritmos:
-Gradient Descent nas versões Batch, Mini Batch e Stochastic
-Normal Equation
-Além disso, testamos os inputs:
-Learning Rates
-Parada por Numero de iterações e por Convergência
-
+\begin{figure*}[h]
+	\centering
+	\subfloat[lambda = 0.0000005, learning rate = 0.01]{
+		\includegraphics[width=0.5\linewidth]{gfx/S_costitr_mitr5000000.png}
+		\label{fig:sto_5m}
+	}
+\end{figure*}
 
 
 
