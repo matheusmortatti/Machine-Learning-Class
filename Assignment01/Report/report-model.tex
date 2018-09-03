@@ -14,6 +14,64 @@
 \usepackage[caption=true,font=footnotesize]{subfig}
 \usepackage[hidelinks]{hyperref}
 
+\graphicspath{ gfx/ }
+
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+		\node[shape=circle,draw,inner sep=1pt] (char) {#1};}}
+
+\lstset{
+  basicstyle=\normalsize ,
+  backgroundcolor=\color{lbcolor},
+  %frame=tb,
+  language=C++,
+  aboveskip=6mm,
+  belowskip=3mm,
+  numbers=left,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  captionpos=b,
+  tabsize=3
+}
+
+% Additional new commands
+\newcommand{\etal}{{\em et al. }}
+\newcommand{\cL}{{\cal L}}
+\newcommand{\map}{\texttt{map} }
+\newcommand{\unmap}{\texttt{unmap} }
+\newcommand{\rb}{\texttt{readBuffer} }
+\newcommand{\rsec}[1]{Section~\ref{sec:#1}}
+\newcommand{\rsecs}[2]{Sections~\ref{sec:#1} --~\ref{sec:#2}}
+\newcommand{\rtab}[1]{Table~\ref{tab:#1}}
+\newcommand{\rfig}[1]{Figure~\ref{fig:#1}}
+\newcommand{\rfigs}[2]{Figures~\ref{fig:#1} --~\ref{fig:#2}}
+\newcommand{\rlst}[1]{Listing~\ref{lst:#1}}
+\newcommand{\rfign}[3]{Figures~\ref{fig:#1}, \ref{fig:#2} \& \ref{fig:#3}}
+\newcommand{\rlsts}[2]{Listings~\ref{lst:#1}~--~\ref{lst:#2}}
+\newcommand{\rlstn}[3]{Listings~\ref{lst:#1}{#2}~--~\ref{lst:#1}{#3}}
+\newcommand{\req}[1]{Equation~\ref{eq:#1}}
+\newcommand{\reqs}[2]{Equations~\ref{eq:#1} --~\ref{eq:#2}}
+\newcommand{\ttt}[1]{{\texttt{#1}}}
+\newcommand{\tit}[1]{{\textit{#1}}}
+\newcommand{\citex}[1]{\cite{XX}\ }
+
+\newenvironment{filecode}[1][]
+{\minipage{0.9\linewidth}% \begin{filecode}[#1]
+	\lstset{basicstyle=\ttfamily\footnotesize,frame=single,float=ht,#1}}
+{\endminipage}% \end{filecode}
+
 \IEEEoverridecommandlockouts
 % The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
 \usepackage[portuguese, english]{babel}
@@ -38,13 +96,13 @@ joserenatovi@gmail.com}}
 
 \maketitle
 
-\section{Introduction}
+\section{Introdução}
 
-Este projeto teve como intuito o estudo prático do método de regressão linear em Machine Learning. Foram utilizado os algoritmos de \textit{Gradient Descent} conhecidos como \textit{Stochastic, Batch, Mini Batch e Equação Normal}, de modo a compara-los em termos de complexidade e acurácia.
+Este projeto teve como intuito o estudo prático do método de regressão linear em Machine Learning. Foram utilizado os algoritmos de \textit{Gradient Descent} conhecidos como \textit{Stochastic, Batch, Mini Batch e Equação Normal}, de modo a compara-los em termos de complexidade e acurácia.~\cite{sandra}
 
 Foi feito um estudo de predição de preço de diamantes, utilizando uma base de dados com 54000 exemplos, em que são apresentados seus preços e nove features como tamanho, cor e número de quilates.
 
-\section{Activities}
+\section{Atividades}
 
 \subsection{Regressão Linear}
 
@@ -100,7 +158,7 @@ Para obtermos um resultado balanceado, utiliza-se uma mistura dos métodos \text
 
 \paragraph{Equação Normal}
 
-Para a regressão linear, é possível derivar uma fórmula direta para o ponto de mínimo local que desejamos. Para isso, utilizamos manipulações matriciais na forma
+Para a regressão linear, é possível derivar uma fórmula direta para o ponto de mínimo local que desejamos. Para isso, utilizamos manipulações matriciais na forma~\cite{ayearofai}
 
 \begin{equation} \label{eq:normal}
 \theta = (X^{T}X)^{-1}X^{T}y
@@ -150,25 +208,69 @@ Este valor deve ser modificado de forma a melhorar o resultado final. Se o valor
 
 , onde $I$ é a matriz identidade.
 
-\section{Proposed Solutions}
+\subsection{Base de Dados}
 
+Foi utilizado uma base de dados sobre Diamantes, a qual descreve diferentes aspectos sobre o diamante como cor, claridade e quilate, e apresenta seu preço. O objetivo deste projeto foi de utilizado o método de \textit{Regressão Linear} descrito acima para prever o preço de um dado diamante, dado suas características.
 
+\section{Soluções Propostas}
 
-\section{Experiments and Discussion}
+\subsection{Tratamento dos Dados}
+
+Para obtermos melhores resultados, começamos por realizar o tratamento dos dados. Para isso, foram aplicados os métodos de \textit{Normalização} descritos na seção anterior. Também, foi aplicado uma \textit{Transformação de Features} nas features \textit{Cut, Color e Clarity}, pois seus valores são descritos por uma string.
+
+\subsection{Algoritmos Implementados}
+
+Com o objetivo de compara-los, foram implementados os algoritmos \textit{Batch, Mini Batch, Stochastic e Equação Normal} como solução para a Regressão Linear.
+
+\paragraph{Algoritmos Iterativos}
+
+Algoritmos iterativos para a \textit{Descida de Gradiente} precisam de um critério de parada para sua execução. Tais critérios foram, demonstrados pela Listagem~\ref{lst:criterio_parada}:
+
+\begin{itemize}
+  \item Número máximo de iterações.
+  \item Valor máximo da a diferença entre os $\theta$s originais e novos.
+\end{itemize}
+
+\begin{filecode}[label=lst:criterio_parada,caption=Criterios de Parada para os algoritmos de Descida do Gradiente]
+  \lstset{numbers=left}
+	\lstinputlisting[language=Python]{gfx/criterio_parada.py}
+\end{filecode}
+
+Foi implementado também uma solução para o caso onde a função de custo diverge devido a um $\alpha$ muito alto. Caso o custo corrente seja maior do que o último custo calculado, o valor de $\alpha$ é diminuido por um fator pré definido, de modo que a descida aconteça com menores riscos de divergência, como demonstrado pela Listagen~\ref{lst:learning_rate_change}.
+
+\begin{filecode}[label=lst:learning_rate_change,caption=Modo como o fator $\alpha$ é modificado]
+  \lstset{numbers=left}
+	\lstinputlisting[language=Python]{gfx/learning_rate_change.py}
+\end{filecode}
+
+\paragraph{Regularização}
+
+Para todas as soluções implementadas, foi utilizado o método de regularização para melhorar os resultados e evitar \textit{Overfitting}. Foi seguido os métodos descritos acima para a implementação tanto na forma da \textit{Equação Normal} quanto para os algoritmos iterativos.
+
+\section{Experimentos e Discussão}
+
+Os experimentos foram realizados em uma máquina que possui um processador Intel Core i7-6700HQ com 4 cores rodando a 2.60GHz e 16GB de RAM, com Ubuntu 16.04.
 
 \begin{figure*}[h]
 	\centering
-	\subfloat[lambda = 0.0000005, learning rate = 0.01]{
-		\includegraphics[width=0.5\linewidth]{gfx/S_costitr_mitr5000000.png}
+	\subfloat[Stochastic with $\lambda$ = 0.0000005, $\alpha$ = 0.01]{
+		\includegraphics[width=0.5\linewidth]{gfx/S_costitr_mitr2000000.png}
 		\label{fig:sto_5m}
 	}
+
+  \subfloat[Mini Batch with $\lambda$ = 0.0000005, $\alpha$ = 0.01]{
+		\includegraphics[width=0.5\linewidth]{gfx/MB_costitr_mitr100000_b1000.png}
+		\label{fig:mb_1m}
+	}
+  \caption{Gráficos de Custo x Iterações para cada algoritmo}
+	\label{fig:results}
 \end{figure*}
 
 
 
 \section{Conclusions and Future Work}
 
-The main conclusions of the work as well as some future directions for other people interested in continuing this work. ~\cite{b1}
+The main conclusions of the work as well as some future directions for other people interested in continuing this work.
 
 \bibliographystyle{IEEEtran}
 \bibliography{biblio-link,biblio}

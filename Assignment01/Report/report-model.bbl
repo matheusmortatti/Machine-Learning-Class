@@ -21,7 +21,15 @@
 \providecommand{\BIBdecl}{\relax}
 \BIBdecl
 
-\bibitem{b1}
-C.~M. Bishop, ``Pattern recognition and machine learning,'' 2006.
+\bibitem{sandra}
+\BIBentryALTinterwordspacing
+S.~Avila. [Online]. Available: \url{https://www.ic.unicamp.br/~sandra/}
+\BIBentrySTDinterwordspacing
+
+\bibitem{ayearofai}
+\BIBentryALTinterwordspacing
+R.~Kapur. [Online]. Available:
+  \url{https://ayearofai.com/rohan-3-deriving-the-normal-equation-using-matrix-calculus-1a1b16f65dda}
+\BIBentrySTDinterwordspacing
 
 \end{thebibliography}
