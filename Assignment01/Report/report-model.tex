@@ -293,7 +293,7 @@ Os algorítmos de Gradient Descent mostraram ter uma diferença de performance m
 
 Porém, caso o algorítmo fosse executado por tempo suficiente, as outras variantes obteriam resultados com erros menores, já que, por utilizar mais do que um diamante do dataset de treino para atualizar Theta, suas atualizações são mais precisas e, no caso do Batch, tem certeza que o novo vetor de thetas leva a um resultado mais proximo do minimo local, o que não ocorre com o Stochastic.
 
-O método da equação normal foi o de melhor desempenho, tendo tempo de execução muito inferior aos demais, além de ser o método com os melhores resultados. Isso se deve pois, enquanto os outros métodos necessitam de diversas iterações para convergirem ao o minimo local, a equação normal já dá o resultado exato do mínimo local.
+O método da equação normal foi o de melhor desempenho, tendo tempo de execução muito inferior aos demais, além de ser o método com os melhores resultados. Isso se deve pois, para datasets com até dezenas de milhares de entradas e centenas de features, a equação normal é rápida do que os métodos por convergência, o que deixa de ser o caso a medida que o dataset e o número de features aumenta.
 
 \begin{table}[H]
 \centering
@@ -315,6 +315,7 @@ Scikit Learn   & 739.09      & -----         & 3561.999    & 200.000    \\ \hlin
 \vspace{-2em}
 
 \begin{table}[H]
+\centering
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -360,8 +361,8 @@ $X + X^{2} + X^{3} + X^{4}$   & 705.34                        \\ \hline
 
 
 Após extensiva análise dos resultados, é seguro dizer que os estudos realizados em \textit{Regressão Linear} foram profundos o suficiente para obter um entendimento maior sobre o assunto.
-Pode-se ver os efeitos de que um bom tratamento de dados, como normalização e aplicação de grids, pode trazer no resultado final, com melhora de 7.2\% com o uso do primeiro e X\% com o segundo.
-Analisando as diferenças de performance e resultados de cada método, pode-se entender quando cada abordagem é mais adequada. Os métodos que melhor desempenharam nesse projeto foram a equação normal e Stochastic GRadient Descent.
+Pode-se ver os efeitos de que um bom tratamento de dados, como normalização e aplicação de grids, pode trazer no resultado final, com melhora de 7.2\% com o uso do primeiro e 8.9\% com o segundo.
+Analisando as diferenças de performance e resultados de cada método, pode-se entender quando cada abordagem é mais adequada. Os métodos que melhor desempenharam nesse projeto foram a equação normal e Stochastic Gradient Descent.
 Os resultados foram em linha com o esperado mesmo com erros relativamente altos. Para obter erros menores, novas abordagens de solução do problema podem ser utilizadas, seja um outro tipo de regressão, como a polinomial que obeteve resultados um pouco melhores, seja com técnicas mais poderosas.
 
 
