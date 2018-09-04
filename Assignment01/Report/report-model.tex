@@ -98,13 +98,13 @@ joserenatovi@gmail.com}}
 
 \section{Introdução}
 
-Este projeto teve como intuito o estudo prático do método de regressão linear em Machine Learning. Foram utilizado os algoritmos de \textit{Gradient Descent} conhecidos como \textit{Stochastic, Batch, Mini Batch e Equação Normal}, de modo a compara-los em termos de complexidade e acurácia.~\cite{sandra}
+Este projeto teve como intuito o estudo prático do método de regressão linear em Machine Learning. Foram utilizado os algoritmos de \textit{Gradient Descent} conhecidos como \textit{Stochastic, Batch e Mini Batch} bem como a \textit{Equação Normal}, que resolve o problema da Regressão Linear por uma equação matricial fechada, de modo a compara-los em termos de complexidade e acurácia.~\cite{sandra}
 
 Foi feito um estudo de predição de preço de diamantes, utilizando uma base de dados com 54000 exemplos, em que são apresentados seus preços e nove features como tamanho, cor e número de quilates.
 
 \section{Atividades}
 
-\subsection{Regressão Linear}
+\subsection{Regressão Linear~\cite{handson}}
 
 Regressão Linear é um método muito conhecido de Machine Learning, utilizado para predizer o valor de uma variável dependente baseado em valores de variáveis independentes. Essa regressão é chamada linear porque se considera que a relação da resposta às variáveis é uma função linear de alguns parâmetros. Desta forma, dado um vetor Theta de tamanho igual ao número de features, cujo valor queremos determinar, temos que:
 
@@ -112,7 +112,7 @@ Regressão Linear é um método muito conhecido de Machine Learning, utilizado p
 PreçoAlvoEsperado = \sum_{i=1}^{m} \theta_{i}X_{i} = h_{\theta}(x)
 \end{equation}
 
-Em que X é um vetor com os valores das features para um dado diamante, cujo preço queremos determinar.Para encontrar esse valor de Theta, utilizaremos alguns algoritmos e compararemos os resultados obtidos com cada um.
+Em que X é um vetor com os valores das features para um dado diamante, cujo preço queremos determinar. Para encontrar esse valor de Theta, utilizaremos alguns algoritmos e compararemos os resultados obtidos com cada um.
 
 Cada algoritmo utilizado é baseado no método de \textit{Descrida de Gradiente (ou Gradient Descent)}. Este é um método utilizado para achar o ponto mínimo de uma função, aproximando gradativamente seu valor até um ponto quando não é possível ser diminuido mais (i.e. a derivada da função neste ponto é zero). Este método consegue apenas achar mínimos locais e, com isso, não é garantido que o resultado obtido é o melhor para o dado problema.
 
@@ -134,7 +134,7 @@ Logo, para aproximarmos os valores de $\theta$ de modo a nos aproximar do mínim
 \theta_{j} := \theta_{j} - \alpha \dfrac{1}{m} \sum_{i=1}^{m}(h_{\theta}(x^{i}) - y^{i}) x^{i}
 \end{equation}
 
-, onde $0 \leq j \leq m$, $x_{0} = 1$ e $\alpha$ é o que chamamos de \textit{Learning Rate} que define o quão agressivamente tentaremos nos aproximar do mínimo. Este método de descida de gradiente é chamada de \textit{Batch Gradient Descent}. A seguir, veremos três outras variações deste algoritmo
+, onde $0 \leq j \leq m$, $x_{0} = 1$ e $\alpha$ é o que chamamos de \textit{Learning Rate} que define o quão agressivamente tentaremos nos aproximar do mínimo. Este método de descida de gradiente é chamada de \textit{Batch Gradient Descent}. A seguir, veremos duas outras variações deste algoritmo e uma forma não iterativa para o problema.
 
 \paragraph{Stochastic Gradient Descent}
 
@@ -236,7 +236,7 @@ Algoritmos iterativos para a \textit{Descida de Gradiente} precisam de um crité
 	\lstinputlisting[language=Python]{gfx/criterio_parada.py}
 \end{filecode}
 
-Foi implementado também uma solução para o caso onde a função de custo diverge devido a um $\alpha$ muito alto. Caso o custo corrente seja maior do que o último custo calculado, o valor de $\alpha$ é diminuido por um fator pré definido, de modo que a descida aconteça com menores riscos de divergência, como demonstrado pela Listagen~\ref{lst:learning_rate_change}.
+Foi implementado também uma solução para o caso onde a função de custo diverge devido a um $\alpha$ muito alto. Caso o custo corrente seja maior do que o último custo calculado, o valor de $\alpha$ é diminuido por um fator pré definido, de modo que a descida aconteça com menores riscos de divergência, como demonstrado pela Listagem~\ref{lst:learning_rate_change}.
 
 \begin{filecode}[label=lst:learning_rate_change,caption=Modo como o fator $\alpha$ é modificado]
   \lstset{numbers=left}
@@ -245,32 +245,103 @@ Foi implementado também uma solução para o caso onde a função de custo dive
 
 \paragraph{Regularização}
 
-Para todas as soluções implementadas, foi utilizado o método de regularização para melhorar os resultados e evitar \textit{Overfitting}. Foi seguido os métodos descritos acima para a implementação tanto na forma da \textit{Equação Normal} quanto para os algoritmos iterativos.
+Para todas as soluções implementadas, foi utilizado o método de regularização para melhorar os resultados e evitar \textit{Overfitting}. Foram seguidos os métodos descritos acima para a implementação tanto na forma da \textit{Equação Normal} quanto para os algoritmos iterativos.
 
 \section{Experimentos e Discussão}
 
 Os experimentos foram realizados em uma máquina que possui um processador Intel Core i7-6700HQ com 4 cores rodando a 2.60GHz e 16GB de RAM, com Ubuntu 16.04.
 
-\begin{figure*}[h]
-	\centering
-	\subfloat[Stochastic with $\lambda$ = 0.0000005, $\alpha$ = 0.01]{
-		\includegraphics[width=0.5\linewidth]{gfx/S_costitr_mitr2000000.png}
-		\label{fig:sto_5m}
-	}
+\subsection{Comparação de Dados Com e Sem Normalização}
 
-  \subfloat[Mini Batch with $\lambda$ = 0.0000005, $\alpha$ = 0.01]{
-		\includegraphics[width=0.5\linewidth]{gfx/MB_costitr_mitr100000_b1000.png}
-		\label{fig:mb_1m}
-	}
-  \caption{Gráficos de Custo x Iterações para cada algoritmo}
-	\label{fig:results}
-\end{figure*}
+Os resultados obtidos rodando Stochastic Gradient Descent para dados sem normalização foram de $812.20$ para o erro final nos dados de treino e $743406.95$ para o custo.
 
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{gfx/S_costitr_mitr2000000_nonnormalized.png}
+  \caption{Custo x Iterações Para Stochastic Sem Normalização}
+  \label{fig:not_normalized}
+\end{figure}
 
+Em acordo com os resultados obtidos, era esperado que os resultados fossem melhores para os dados normalizados, conforme a Tabela \ref{table:results_train}. A diferença foi pequena, pois os valores encontrados nas diversas features nao são muito diferentes (mesma ordem para todos os dados). A Figura~\ref{fig:not_normalized} nos mostra que o caminho para a minimização do custo sem normalização teve muito mais ruido, sendo necessário o ajuste do \textit{Learning Rate} quando o valor divergia. Isso se dá pois atualizamos os valores dos coeficientes para cada exemplo de treino e, como os valores não estão normalizados, isso ocorre de forma não uniforme, fazendo com que o custo varie muito mais.
 
-\section{Conclusions and Future Work}
+\subsection{Comparação entre Algoritmos}
 
-The main conclusions of the work as well as some future directions for other people interested in continuing this work.
+Os algorítmos de Gradient Descent mostraram ter uma diferença de performance muito grande. Para um tempo de execução consideravelmente menor, Stochastic obteve resultados muito melhores do que as duas outras variantes, que demoraram muito mais para convergir, como podemos ver pela Tabela~\ref{table:results_train}. Por observar apenas um diamante do dataset de treino a cada atualização de Theta, a atualização deste vetor é muito mais rápida. Desta forma, ele chega mais próximo do mínimo local da função do que Batch e Mini Batch.
+
+Porém, caso o algorítmo fosse executado por tempo suficiente, as outras variantes obteriam resultados com erros menores, já que, por utilizar mais do que um diamante do dataset de treino para atualizar Theta, suas atualizações são mais precisas e, no caso do Batch, tem certeza que o novo vetor de thetas leva a um resultado mais proximo do minimo local, o que não ocorre com o Stochastic.
+
+O método da equação normal foi o de melhor desempenho, tendo tempo de execução muito inferior aos demais, além de ser o método com os melhores resultados. Isso se deve pois, enquanto os outros métodos necessitam de diversas iterações para convergirem ao o minimo local, a equação normal já dá o resultado exato do mínimo local.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+               & Absolute Error & Final Cost    & Run Time(s) & Iterations \\ \hline
+Stochastic     & 753.24      & 645820.77     & 676         & 2.000.000  \\ \hline
+Mini Batch     & 991.72      & 1002188.59    & 1693.64     & 2.000      \\ \hline
+Batch          & 2554.09     & 6426353.60    & 4142.068    & 1000       \\ \hline
+Equação Normal & 729.33      & 561271.499184 & 0.455       & ------     \\ \hline
+Scikit Learn   & 739.09      & -----         & 3561.999    & 200.000    \\ \hline
+\end{tabular}
+\caption{Tabela de Resultados de Treino Para Cada Algoritmo}
+\label{table:results_train}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+               & Absolute Error (Validation Data) \\ \hline
+Stochastic     & 743.73                        \\ \hline
+Equação Normal & 726.32                        \\ \hline
+Scikit Learn   & 731.10                        \\ \hline
+\end{tabular}
+\caption{Tabela de Resultados de Validação Para Os Algoritmos Mais Eficientes}
+\label{table:results_test}
+\end{table}
+
+Comparando os valores obtidos com a implementação para o algoritmo \textit{Stochastic} feita pelos autores deste projeto e a feita pela framework \textit{Scikit-Learn}~\cite{scikit}, vemos que eles são muito similares em termos do erro final obtido, tanto para os dados de treino (Tabela~\ref{table:results_train}) quanto para os dados de validação (Tabela~\ref{table:results_test}). Contudo, vemos divergências no número de iterações e no tempo de execução. Enquando o scikit obteve resultados muito próximos da Equação Normal em apenas \textit{200.000} iterações, nossa implementação precisou de $2x$ mais. Em contrapartida, scikit teve um tempo de execução aproximadamente $5x$ maior, o que pode ser explicado pelos recursos que o algoritmo utiliza para evitar overfitting, divergência, entre outros detalhes de implementação. Vale notar também que a base de dados utilizada é relativamente simples e não necessita de um algoritmo com a complexidade do encontrado na framework, explicando os bons resultados obtidos pela nossa implementação.
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{gfx/S_costitr_mitr2000000.png}
+  \caption{Custo x Iterações Para Stochastic}
+  \label{fig:costs_sto}
+\end{figure}
+
+% \begin{figure}[H]
+%   \includegraphics[width=\linewidth]{gfx/MB_costitr_mitr100000_b1000.png}
+%   \caption{Custo x Iterações Para Mini Batch}
+%   \label{fig:costs_mbatch}
+% \end{figure}
+%
+% \begin{figure}[H]
+%   \includegraphics[width=\linewidth]{gfx/B_costitr_mitr1000.png}
+%   \caption{Custo x Iterações Para Batch}
+%   \label{fig:not_normalized}
+% \end{figure}
+
+Observando a Figura~\ref{fig:costs_sto}, podemos notar a rapidez com que o algoritmo \textit{Stochastic} converge no início de sua operação. Contudo, após aproximadamente $250.000$ iterações, a taxa de convergência diminui significativamente. A figura também nos mostra como um \textit{Learning Rate} bem definido afeta  o resultado final. Se compararmos com a Figura~\ref{fig:not_normalized}, podemos ver que esta possui um ruído muito significativo, proveniente, dentre outros motivos, de uma taxa de aprendizado muito agressiva para a função.
+
+\subsection{Regressão Polinomial}
+
+Foram feitos breves experimentos com \textit{Regressão Polinomial} para verificar seus impactos nos resultados. Para isso, foi utilizado o método da Equação Normal e as features foram modificadas de modo a incluir termos polinomiais. Como podemos ver pela Tabela~\ref{table:results_poli}, os resultados para a regressão polinomial não significativamente melhores que os da regressão linear. Isso pode ser explicado pelo \textit{Erro Irredutível} inerente dos dados utilizados. Isto significa que a qualidade dos dados utilizados não é boa o suficiente para realizar um treino e uma predição precisa. Vale lembrar também que o quanto mais aumentamos o coeficiente polinomial das features, maiores as chances de \textit{Overfitting}, mesmo que minimizados pelo processo de Regularização.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|}
+\hline
+               								& Absolute Error (Validation Data) \\ \hline
+$X$     											& 726.32                        \\ \hline
+$X + X^{2}$ 									& 720.94                        \\ \hline
+$X + X^{2} + X^{3}$   				& 705.90                        \\ \hline
+$X + X^{2} + X^{3} + X^{4}$   & 705.34                        \\ \hline
+\end{tabular}
+\caption{Tabela de Resultados da Regressão Polinomial}
+\label{table:results_poli}
+\end{table}
+
+\section{Conclusões}
+
+Após extensiva análise dos resultados, é seguro dizer que os estudos realizados em \textit{Regressão Linear} foram profundos o suficiente para obtermos um entendimento maior sobre o assunto. Pudemos ver os efeitos de métodos de tratamento de dados, normalização e regularização na prática, bem como testar o quanto cada fator do método influencia no resultado final, mesmo que o resultado final das predições não tenham sido satisfatórios.
 
 \bibliographystyle{IEEEtran}
 \bibliography{biblio-link,biblio}

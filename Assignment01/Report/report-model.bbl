@@ -26,10 +26,23 @@
 S.~Avila. [Online]. Available: \url{https://www.ic.unicamp.br/~sandra/}
 \BIBentrySTDinterwordspacing
 
+\bibitem{handson}
+\BIBentryALTinterwordspacing
+A.~Géron, ``Hands-on machine learning with scikit-learn and tensorflow.''
+  [Online]. Available:
+  \url{https://www.oreilly.com/library/view/hands-on-machine-learning/9781491962282/ch04.html}
+\BIBentrySTDinterwordspacing
+
 \bibitem{ayearofai}
 \BIBentryALTinterwordspacing
 R.~Kapur. [Online]. Available:
   \url{https://ayearofai.com/rohan-3-deriving-the-normal-equation-using-matrix-calculus-1a1b16f65dda}
+\BIBentrySTDinterwordspacing
+
+\bibitem{scikit}
+\BIBentryALTinterwordspacing
+``scikit-learn, machine learning in python.'' [Online]. Available:
+  \url{http://scikit-learn.org/}
 \BIBentrySTDinterwordspacing
 
 \end{thebibliography}

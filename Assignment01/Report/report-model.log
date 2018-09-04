@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.27)  2 SEP 2018 21:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.8.27)  3 SEP 2018 22:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1315,32 +1315,35 @@ LaTeX Font Info:    Try loading font information for OT1+pcr on input line 236.
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 (./gfx/criterio_parada.py) (./gfx/learning_rate_change.py) [2]
-<gfx/S_costitr_mitr2000000.png, id=74, 433.62pt x 289.08pt>
+<gfx/S_costitr_mitr2000000_nonnormalized.png, id=76, 433.62pt x 289.08pt>
+File: gfx/S_costitr_mitr2000000_nonnormalized.png Graphic file (type png)
+
+<use gfx/S_costitr_mitr2000000_nonnormalized.png>
+Package pdftex.def Info: gfx/S_costitr_mitr2000000_nonnormalized.png used on in
+put line 259.
+(pdftex.def)             Requested size: 252.0pt x 168.00174pt.
+
+Overfull \hbox (34.53494pt too wide) in paragraph at lines 276--285
+ [][] 
+ []
+
+<gfx/S_costitr_mitr2000000.png, id=84, 433.62pt x 289.08pt>
 File: gfx/S_costitr_mitr2000000.png Graphic file (type png)
 
 <use gfx/S_costitr_mitr2000000.png>
-Package pdftex.def Info: gfx/S_costitr_mitr2000000.png used on input line 259.
-(pdftex.def)             Requested size: 258.0pt x 172.00693pt.
+Package pdftex.def Info: gfx/S_costitr_mitr2000000.png used on input line 305.
+(pdftex.def)             Requested size: 252.0pt x 168.00174pt.
 
-<gfx/MB_costitr_mitr100000_b1000.png, id=76, 433.62pt x 289.08pt>
-File: gfx/MB_costitr_mitr100000_b1000.png Graphic file (type png)
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-<use gfx/MB_costitr_mitr100000_b1000.png>
-Package pdftex.def Info: gfx/MB_costitr_mitr100000_b1000.png used on input line
- 264.
-(pdftex.def)             Requested size: 258.0pt x 172.00693pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-(./report-model.bbl
-Underfull \hbox (badness 4060) in paragraph at lines 31--34
+ [3 <./gfx/S_costitr_mitr2000000_nonnormalized.png>] (./report-model.bbl
+Underfull \hbox (badness 4060) in paragraph at lines 38--41
 []\OT1/ptm/m/n/8 R. Ka-pur. [On-line]. Avail-able: []$https : / / ayearofai . c
 om /
  []
 
 
-Overfull \hbox (9.68185pt too wide) in paragraph at lines 31--34
+Overfull \hbox (9.68185pt too wide) in paragraph at lines 38--41
 \OT1/ptm/m/n/8 rohan-[]3-[]deriving-[]the-[]normal-[]equation-[]using-[]matrix-
 []calculus-[]1a1b16f65dda$[] 
  []
@@ -1357,24 +1360,22 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 278.
-[3
-
-] [4 <./gfx/S_costitr_mitr2000000.png> <./gfx/MB_costitr_mitr100000_b1000.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 278.
+[4 <./gfx/S_costitr_mitr2000000.png>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 349.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 349.
  (./report-model.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 278.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 278.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 278.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 349.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 349.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 349.
  ) 
 Here is how much of TeX's memory you used:
- 21158 strings out of 494888
- 377063 string characters out of 6179127
- 490409 words of memory out of 5000000
+ 21165 strings out of 494888
+ 377190 string characters out of 6179127
+ 490768 words of memory out of 5000000
  24033 multiletter control sequences out of 15000+600000
  37412 words of font info for 84 fonts, out of 8000000 for 9000
  38 hyphenation exceptions out of 8191
- 55i,10n,58p,799b,1409s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 55i,12n,58p,1109b,1409s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
@@ -1382,16 +1383,18 @@ f-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist
 type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
 ublic/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy
-10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb>
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/
-texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/font
-s/type1/urw/times/utmri8a.pfb>
-Output written on report-model.pdf (4 pages, 166664 bytes).
+/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7
+.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts
+/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/time
+s/utmri8a.pfb>
+Output written on report-model.pdf (4 pages, 192668 bytes).
 PDF statistics:
- 161 PDF objects out of 1000 (max. 8388607)
- 136 compressed objects within 2 object streams
- 59 named destinations out of 1000 (max. 500000)
+ 191 PDF objects out of 1000 (max. 8388607)
+ 164 compressed objects within 2 object streams
+ 66 named destinations out of 1000 (max. 500000)
  23 words of extra memory for PDF output out of 10000 (max. 10000000)
 

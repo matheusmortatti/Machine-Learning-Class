@@ -18,6 +18,7 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \catcode `"\active 
 \citation{sandra}
+\citation{handson}
 \citation{ayearofai}
 \select@language{english}
 \@writefile{toc}{\select@language{english}}
@@ -25,11 +26,11 @@
 \@writefile{lot}{\select@language{english}}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introdu\IeC {\c c}\IeC {\~a}o}{1}{section.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {II}Atividades}{1}{section.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {II-A}}Regress\IeC {\~a}o Linear}{1}{subsection.2.1}}
-\newlabel{eq:hx}{{1}{1}{Regressão Linear}{equation.2.1}{}}
-\newlabel{eq:cost_function}{{2}{1}{Regressão Linear}{equation.2.2}{}}
-\newlabel{eq:cost_derivative}{{3}{1}{Regressão Linear}{equation.2.3}{}}
-\newlabel{eq:gradient_descent}{{4}{1}{Regressão Linear}{equation.2.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {II-A}}Regress\IeC {\~a}o Linear~\cite  {handson}}{1}{subsection.2.1}}
+\newlabel{eq:hx}{{1}{1}{Regressão Linear~\cite {handson}}{equation.2.1}{}}
+\newlabel{eq:cost_function}{{2}{1}{Regressão Linear~\cite {handson}}{equation.2.2}{}}
+\newlabel{eq:cost_derivative}{{3}{1}{Regressão Linear~\cite {handson}}{equation.2.3}{}}
+\newlabel{eq:gradient_descent}{{4}{1}{Regressão Linear~\cite {handson}}{equation.2.4}{}}
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\unhbox \voidb@x \hbox {II-A}0a}Stochastic Gradient Descent}{1}{paragraph.2.1.0.1}}
 \newlabel{eq:stochastic_descent}{{5}{1}{Stochastic Gradient Descent}{equation.2.5}{}}
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\unhbox \voidb@x \hbox {II-A}0b}Mini Batch Gradient Descent}{1}{paragraph.2.1.0.2}}
@@ -49,22 +50,30 @@
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\unhbox \voidb@x \hbox {III-B}0a}Algoritmos Iterativos}{2}{paragraph.3.2.0.1}}
 \newlabel{lst:criterio_parada}{{1}{2}{Criterios de Parada para os algoritmos de Descida do Gradiente}{lstlisting.1}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Criterios de Parada para os algoritmos de Descida do Gradiente}{2}{lstlisting.1}}
-\bibstyle{IEEEtran}
-\bibdata{biblio-link,biblio}
-\bibcite{sandra}{1}
-\bibcite{ayearofai}{2}
+\citation{scikit}
 \newlabel{lst:learning_rate_change}{{2}{3}{Modo como o fator $\alpha $ é modificado}{lstlisting.2}{}}
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {2}Modo como o fator $\alpha $ \IeC {\'e} modificado}{3}{lstlisting.2}}
 \@writefile{toc}{\contentsline {paragraph}{\numberline {\unhbox \voidb@x \hbox {III-B}0b}Regulariza\IeC {\c c}\IeC {\~a}o}{3}{paragraph.3.2.0.2}}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Experimentos e Discuss\IeC {\~a}o}{3}{section.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusions and Future Work}{3}{section.5}}
-\@writefile{toc}{\contentsline {section}{References}{3}{section*.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-A}}Compara\IeC {\c c}\IeC {\~a}o de Dados Com e Sem Normaliza\IeC {\c c}\IeC {\~a}o}{3}{subsection.4.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Custo x Itera\IeC {\c c}\IeC {\~o}es Para Stochastic Sem Normaliza\IeC {\c c}\IeC {\~a}o\relax }}{3}{figure.caption.2}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:sto_5m}{{1a}{4}{Subfigure 1a}{subfigure.1.1}{}}
-\newlabel{sub@fig:sto_5m}{{(a)}{a}{Subfigure 1a\relax }{subfigure.1.1}{}}
-\newlabel{fig:mb_1m}{{1b}{4}{Subfigure 1b}{subfigure.1.2}{}}
-\newlabel{sub@fig:mb_1m}{{(b)}{b}{Subfigure 1b\relax }{subfigure.1.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Gr\IeC {\'a}ficos de Custo x Itera\IeC {\c c}\IeC {\~o}es para cada algoritmo\relax }}{4}{figure.caption.2}}
-\newlabel{fig:results}{{1}{4}{Gráficos de Custo x Iterações para cada algoritmo\relax }{figure.caption.2}{}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Stochastic with $\lambda $ = 0.0000005, $\alpha $ = 0.01}}}{4}{subfigure.1.1}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Mini Batch with $\lambda $ = 0.0000005, $\alpha $ = 0.01}}}{4}{subfigure.1.2}}
+\newlabel{fig:not_normalized}{{1}{3}{Custo x Iterações Para Stochastic Sem Normalização\relax }{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-B}}Compara\IeC {\c c}\IeC {\~a}o entre Algoritmos}{3}{subsection.4.2}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Tabela de Resultados de Treino Para Cada Algoritmo\relax }}{3}{table.caption.3}}
+\newlabel{table:results_train}{{I}{3}{Tabela de Resultados de Treino Para Cada Algoritmo\relax }{table.caption.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Tabela de Resultados de Valida\IeC {\c c}\IeC {\~a}o Para Os Algoritmos Mais Eficientes\relax }}{3}{table.caption.4}}
+\newlabel{table:results_test}{{II}{3}{Tabela de Resultados de Validação Para Os Algoritmos Mais Eficientes\relax }{table.caption.4}{}}
+\bibstyle{IEEEtran}
+\bibdata{biblio-link,biblio}
+\bibcite{sandra}{1}
+\bibcite{handson}{2}
+\bibcite{ayearofai}{3}
+\bibcite{scikit}{4}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Custo x Itera\IeC {\c c}\IeC {\~o}es Para Stochastic\relax }}{4}{figure.caption.5}}
+\newlabel{fig:costs_sto}{{2}{4}{Custo x Iterações Para Stochastic\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\unhbox \voidb@x \hbox {IV-C}}Regress\IeC {\~a}o Polinomial}{4}{subsection.4.3}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Tabela de Resultados da Regress\IeC {\~a}o Polinomial\relax }}{4}{table.caption.6}}
+\newlabel{table:results_poli}{{III}{4}{Tabela de Resultados da Regressão Polinomial\relax }{table.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclus\IeC {\~o}es}{4}{section.5}}
+\@writefile{toc}{\contentsline {section}{References}{4}{section*.7}}
