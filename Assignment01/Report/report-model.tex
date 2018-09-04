@@ -174,7 +174,7 @@ Como cada feature tem seu valor em uma escala diferente (i.e. algumas estão na 
 x_{i} = \dfrac{x_{i} - \dfrac{size(x_{i})}{2}}{size(x_{i})}
 \end{equation}
 
-\subsection{Transformação de Features}
+\subsection{Transformação de Features Com Valores Não Reais}
 
 Em alguns casos, podemos ter features que não possuem um valor no domínio dos números reais. Por exemplo, uma feature pode representar a cor de um dado elemento. Deste modo, é necessário realizar uma transformação de tais features para o domínio dos reais. Para realizar tal transformação, criamos uma nova feature para cada possível valor da feature que queremos transformar, de modo que, se para o exemplo de dado $e_{i}$ temos que esta feature possui um valor $x_{j}$, a nova feature correspondente a $x_{j}$ terá o valor $1$ e as demais features criadas terão o valor $0$. Tomemos como exemplo uma feature de Cor que pode receber os valores \textit{Azul, Amarelo, Vermelho e Verde}. Assim, o resultado da transformação acontecerá da seguinte forma:
 
@@ -190,7 +190,7 @@ Verde           & 0    & 0       & 0        & 1     \\ \hline
 \end{tabular}
 \end{table}
 
-Onde cada coluna representa a nova feature criada e cada linha representa o valor original da feature $x_{i}$.
+Onde cada coluna representa a nova feature criada e cada linha representa o valor original da feature $x_{i}$. Chamamos este método de \textit{Grid}.
 
 \subsection{Regularização}
 
@@ -216,7 +216,7 @@ Foi utilizado uma base de dados sobre Diamantes, a qual descreve diferentes aspe
 
 \subsection{Tratamento dos Dados}
 
-Para obtermos melhores resultados, começamos por realizar o tratamento dos dados. Para isso, foram aplicados os métodos de \textit{Normalização} descritos na seção anterior. Também, foi aplicado uma \textit{Transformação de Features} nas features \textit{Cut, Color e Clarity}, pois seus valores são descritos por uma string.
+Para obtermos melhores resultados, começamos por realizar o tratamento dos dados. Para isso, foram aplicados os métodos de \textit{Normalização} descritos na seção anterior. Também, foi aplicado o método de \textit{Grid} nas features \textit{Cut, Color e Clarity}, pois seus valores são descritos por uma string.
 
 \subsection{Algoritmos Implementados}
 
@@ -251,9 +251,11 @@ Para todas as soluções implementadas, foi utilizado o método de regularizaç�
 
 Os experimentos foram realizados em uma máquina que possui um processador Intel Core i7-6700HQ com 4 cores rodando a 2.60GHz e 16GB de RAM, com Ubuntu 16.04.
 
-\subsection{Comparação de Dados Com e Sem Normalização}
+\subsection{Comparação de Tratamento de Dados}
 
-Os resultados obtidos rodando Stochastic Gradient Descent para dados sem normalização foram de $812.20$ para o erro final nos dados de treino e $743406.95$ para o custo.
+\paragraph{Aplicação de Normalização}
+
+Os resultados obtidos rodando Stochastic Gradient Descent para dados sem normalização foram de $812.20$ para o erro absoluto nos dados de treino e $743406.95$ para o custo.
 
 \begin{figure}[H]
   \includegraphics[width=\linewidth]{gfx/S_costitr_mitr2000000_nonnormalized.png}
@@ -261,7 +263,29 @@ Os resultados obtidos rodando Stochastic Gradient Descent para dados sem normali
   \label{fig:not_normalized}
 \end{figure}
 
-Em acordo com os resultados obtidos, era esperado que os resultados fossem melhores para os dados normalizados, conforme a Tabela \ref{table:results_train}. A diferença foi pequena, pois os valores encontrados nas diversas features nao são muito diferentes (mesma ordem para todos os dados). A Figura~\ref{fig:not_normalized} nos mostra que o caminho para a minimização do custo sem normalização teve muito mais ruido, sendo necessário o ajuste do \textit{Learning Rate} quando o valor divergia. Isso se dá pois atualizamos os valores dos coeficientes para cada exemplo de treino e, como os valores não estão normalizados, isso ocorre de forma não uniforme, fazendo com que o custo varie muito mais.
+Em acordo com os resultados obtidos, era esperado que os resultados fossem melhores para os dados normalizados, que se encontram na Tabela \ref{table:results_train}. A diferença foi pequena, pois os valores encontrados nas diversas features nao são muito diferentes (mesma ordem para todos os dados).
+
+A Figura~\ref{fig:not_normalized} nos mostra que o caminho para a minimização do custo sem normalização teve muito mais ruido, sendo necessário o ajuste do \textit{Learning Rate} quando o valor divergia. Isso se dá pois atualizamos os valores dos coeficientes para cada exemplo de treino e, como os valores não estão normalizados, isso ocorre de forma não uniforme, fazendo com que o custo varie muito mais.
+
+\paragraph{Aplicação de Grid}
+
+Os resultados obtidos utilizando a Equação Normal para dados sem \textit{Grid} foram de $794.47$ para o erro absoluto nos dados de treino. Com a aplicação de \textit{Grid}, os resultados foram de $729.33$ para o erro absoluto.
+
+Os resultados melhores para a aplicação de grid mostram que a aplicação de uma ordem de valores para as features não reais não funciona muito bem, pois isto infere que os valores para tais features possuem uma relação de grandeza crescente ou decrescente, o que pode não ser o caso.
+
+\subsection{Aplicação da Regularização}
+
+Os resultados obtidos utilizando a Equação Normal para dados com e sem a \textit{Regularização} foram feitos sem a aplicação de \textit{Grid}, com \textit{Normalização}.
+
+Tais resultados foram de $794.47$ com $\lambda = -1.5$ e de $805.15$ com $\lambda = 0$ nos dados de treino. A pequena diferença ocorre pelo fato de que a regressão linear, por utilizar apenas termos de ordem primária em sua função $h(\theta)$, não sofre de um \textit{Overfitting} significativo, não necessitando da aplicação da regularização para evitá-lo.
+
+Com a aplicação de todos os métodos de tratamento de dados descritos até aqui, foram testados valores para $\lambda$ de modo a acharmos seu valor ótimo. Isso pode ser ilustrado pela Figura~\ref{fig:reg}.
+
+\begin{figure}[H]
+  \includegraphics[width=\linewidth]{gfx/normaleq_lambdaxcost_1.png}
+  \caption{Erro X Lambda na Equação Normal}
+  \label{fig:reg}
+\end{figure}
 
 \subsection{Comparação entre Algoritmos}
 
@@ -273,6 +297,7 @@ O método da equação normal foi o de melhor desempenho, tendo tempo de execuç
 
 \begin{table}[H]
 \centering
+\resizebox{\linewidth}{!}{%
 \begin{tabular}{|c|c|c|c|c|}
 \hline
                & Absolute Error & Final Cost    & Run Time(s) & Iterations \\ \hline
@@ -282,20 +307,24 @@ Batch          & 2554.09     & 6426353.60    & 4142.068    & 1000       \\ \hlin
 Equação Normal & 729.33      & 561271.499184 & 0.455       & ------     \\ \hline
 Scikit Learn   & 739.09      & -----         & 3561.999    & 200.000    \\ \hline
 \end{tabular}
+}
 \caption{Tabela de Resultados de Treino Para Cada Algoritmo}
 \label{table:results_train}
 \end{table}
 
+\vspace{-2em}
+
 \begin{table}[H]
-\centering
-\begin{tabular}{|c|c|}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{|c|c|c|c|}
 \hline
-               & Absolute Error (Validation Data) \\ \hline
-Stochastic     & 743.73                        \\ \hline
-Equação Normal & 726.32                        \\ \hline
-Scikit Learn   & 731.10                        \\ \hline
-\end{tabular}
-\caption{Tabela de Resultados de Validação Para Os Algoritmos Mais Eficientes}
+               & Absolute Error & $\lambda$ & $\alpha$ \\ \hline
+Stochastic     & 743.73         & 0.0000005 & 0.01     \\ \hline
+Equação Normal & 726.32         & -1.5      & -----    \\ \hline
+Scikit-Learn   & 731.10         & 0.0000005 & 0.01     \\ \hline
+\end{tabular}%
+}
+	\caption{Tabela de Resultados de Validação Para Os Algoritmos Mais Eficientes}
 \label{table:results_test}
 \end{table}
 
@@ -307,23 +336,11 @@ Comparando os valores obtidos com a implementação para o algoritmo \textit{Sto
   \label{fig:costs_sto}
 \end{figure}
 
-% \begin{figure}[H]
-%   \includegraphics[width=\linewidth]{gfx/MB_costitr_mitr100000_b1000.png}
-%   \caption{Custo x Iterações Para Mini Batch}
-%   \label{fig:costs_mbatch}
-% \end{figure}
-%
-% \begin{figure}[H]
-%   \includegraphics[width=\linewidth]{gfx/B_costitr_mitr1000.png}
-%   \caption{Custo x Iterações Para Batch}
-%   \label{fig:not_normalized}
-% \end{figure}
-
 Observando a Figura~\ref{fig:costs_sto}, podemos notar a rapidez com que o algoritmo \textit{Stochastic} converge no início de sua operação. Contudo, após aproximadamente $250.000$ iterações, a taxa de convergência diminui significativamente. A figura também nos mostra como um \textit{Learning Rate} bem definido afeta  o resultado final. Se compararmos com a Figura~\ref{fig:not_normalized}, podemos ver que esta possui um ruído muito significativo, proveniente, dentre outros motivos, de uma taxa de aprendizado muito agressiva para a função.
 
 \subsection{Regressão Polinomial}
 
-Foram feitos breves experimentos com \textit{Regressão Polinomial} para verificar seus impactos nos resultados. Para isso, foi utilizado o método da Equação Normal e as features foram modificadas de modo a incluir termos polinomiais. Como podemos ver pela Tabela~\ref{table:results_poli}, os resultados para a regressão polinomial não significativamente melhores que os da regressão linear. Isso pode ser explicado pelo \textit{Erro Irredutível} inerente dos dados utilizados. Isto significa que a qualidade dos dados utilizados não é boa o suficiente para realizar um treino e uma predição precisa. Vale lembrar também que o quanto mais aumentamos o coeficiente polinomial das features, maiores as chances de \textit{Overfitting}, mesmo que minimizados pelo processo de Regularização.
+Foram feitos breves experimentos com \textit{Regressão Polinomial} para verificar seus impactos nos resultados. Para isso, foi utilizado o método da Equação Normal e as features foram modificadas de modo a incluir termos polinomiais. Como podemos ver pela Tabela~\ref{table:results_poli}, os resultados para a regressão polinomial não são significativamente melhores que os da regressão linear. Isso pode ser explicado pelo \textit{Erro Irredutível} inerente dos dados utilizados. Isto significa que a qualidade dos dados utilizados não é boa o suficiente para realizar um treino e uma predição precisa. Vale lembrar também que o quanto mais aumentamos o coeficiente polinomial das features, maiores as chances de \textit{Overfitting}, mesmo que minimizados pelo processo de Regularização.
 
 \begin{table}[H]
 \centering
@@ -341,7 +358,12 @@ $X + X^{2} + X^{3} + X^{4}$   & 705.34                        \\ \hline
 
 \section{Conclusões}
 
-Após extensiva análise dos resultados, é seguro dizer que os estudos realizados em \textit{Regressão Linear} foram profundos o suficiente para obtermos um entendimento maior sobre o assunto. Pudemos ver os efeitos de métodos de tratamento de dados, normalização e regularização na prática, bem como testar o quanto cada fator do método influencia no resultado final, mesmo que o resultado final das predições não tenham sido satisfatórios.
+
+Após extensiva análise dos resultados, é seguro dizer que os estudos realizados em \textit{Regressão Linear} foram profundos o suficiente para obter um entendimento maior sobre o assunto.
+Pode-se ver os efeitos de que um bom tratamento de dados, como normalização e aplicação de grids, pode trazer no resultado final, com melhora de 7.2\% com o uso do primeiro e X\% com o segundo.
+Analisando as diferenças de performance e resultados de cada método, pode-se entender quando cada abordagem é mais adequada. Os métodos que melhor desempenharam nesse projeto foram a equação normal e Stochastic GRadient Descent.
+Os resultados foram em linha com o esperado mesmo com erros relativamente altos. Para obter erros menores, novas abordagens de solução do problema podem ser utilizadas, seja um outro tipo de regressão, como a polinomial que obeteve resultados um pouco melhores, seja com técnicas mais poderosas.
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{biblio-link,biblio}
