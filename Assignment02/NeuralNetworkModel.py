@@ -13,8 +13,8 @@ def dsigmoid(val):
     r = sigmoid(val)
     return r*(1 - r)
 
-class NeuralNetworkModel:
-    def __init__(self, l_hidden = 1, hidden_neurons = 16, activation = "ReLU", use_softmax = False, epochs = 10, batch_size = 1, alpha = 0.01):
+class Model:
+    def __init__(self, l_hidden = 1, hidden_neurons = 16, activation = "sigmoid", use_softmax = False, epochs = 10, batch_size = 1, alpha = 0.01):
         self.l_hidden = l_hidden
         self.hidden_neurons = hidden_neurons
         self.activation = np.vectorize(getattr(sys.modules[__name__],activation))
@@ -59,6 +59,17 @@ class NeuralNetworkModel:
 
         self.layers.append(last_layer)
     
+    def initialize_error(self):
+        error = []
+        error.append(np.zeros((self.input.shape[0], 1)))
+
+        for i in range(self.l_hidden):
+            error.append(np.zeros((self.hidden_neurons, 1)))
+        
+        error.append(np.zeros((self.class_number,1)))
+
+        return error
+    
     def initialize_d(self):
         D = []
         D.append(np.zeros((self.hidden_neurons, self.input.shape[0])))
@@ -99,8 +110,14 @@ class NeuralNetworkModel:
             for offset in  range(0, ncol, self.batch_size):
                 self.D = self.initialize_d()
                 for col in range(0, self.batch_size):
-                    sample = self.input[:,col]
-                    starget = self.target[:,col]
+                    self.error = self.initialize_error()
+                    if(offset + col >= ncol):
+                        break
+
+                    sample = self.input[:,offset + col]
+                    starget = np.zeros((self.class_number, 1))
+                    target_class = self.target[:,offset + col][0]
+                    starget[target_class,0] = 1
 
                     output = self.FeedForward(sample)
                     self.BackPropagation(output, starget)
@@ -116,16 +133,37 @@ class NeuralNetworkModel:
             it += 1
 
     def UpdateWeights(self):
+        # print("update weights not implemented")
         for i in range(len(self.D)):
             self.layers[i]["weight"] = np.subtract(self.layers[i]["weight"], np.multiply(self.alpha, self.D[i]))
     
     def BackPropagation(self, output, target):
         output_error = np.subtract(output, target)
 
-        self.D[-1] = np.add(self.D[-1], output_error)
-        for i in range(len(self.layers)-1, 1, -1):
-            self.D[i-1] = np.add(self.D[i-1],np.multiply(self.dactivation(self.layers[i]["z"]), np.matmul(np.transpose(self.layers[i]["weight"]), self.D[i])))
+        self.error[-1] = np.add(self.error[-1], output_error)
+        for i in range(len(self.layers)-1, 0, -1):
+            txd = np.matmul(np.transpose(self.layers[i]["weight"]),self.error[i+1])
+            txdxg = np.multiply(self.dactivation(self.layers[i]["z"]), txd)
+            self.error[i] = np.add(self.error[i],txdxg)
+
+            # print(i)
+            # print(np.transpose(self.layers[i]["weight"]).shape)
+            # print(self.error[i+1].shape)
+            # print(txd.shape)
+            # print(txdxg.shape)
+            # print(self.error[i].shape)
+
+        
+        for k in range(len(self.layers)):
+            a = self.layers[k]["a"]
+            err = self.error[k+1]
+            for i in range(err.shape[0]):
+                self.D[k][i,:] = (a*err[i])[:,0]
+
 
     def Predict(self, input, target):
-        output = self.FeedForward(input)
-        return output
+        res = {}
+        res["output"] = self.FeedForward(input)
+        res["predicted_class"] = np.argmax(res["output"])
+
+        return res
