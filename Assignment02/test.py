@@ -12,7 +12,7 @@ target_train = target[:half]
 data_val = data[:,half:]
 target_val = target[half:]
 
-model = NNM.Model(activation="sigmoid", epochs= 100, alpha=0.01)
+model = NNM.Model(activation="ReLU", epochs=10000, alpha=0.00001, l_hidden=1, batch_size=1, use_softmax=True)
 print("training ...")
 model.fit(data_train, [target_train])
 print("training done")

@@ -1,7 +1,9 @@
 import numpy as np
 import cmath as math
 import sys
+import os
 import random
+import progressbar
 
 def ReLU(val):
     return max(0, val)
@@ -22,10 +24,11 @@ class Model:
         self.use_softmax = use_softmax
         self.epochs = epochs
         self.batch_size = batch_size
+        self.v_exp = np.vectorize(math.exp)
 
         self.alpha = alpha
 
-        self.epsilon = 4
+        self.epsilon = 1
         
 
     def CreateNetwork(self, input, target):
@@ -61,6 +64,7 @@ class Model:
     
     def initialize_error(self):
         error = []
+
         error.append(np.zeros((self.input.shape[0], 1)))
 
         for i in range(self.l_hidden):
@@ -72,14 +76,19 @@ class Model:
     
     def initialize_d(self):
         D = []
+        bD = []
+
         D.append(np.zeros((self.hidden_neurons, self.input.shape[0])))
+        bD.append(np.zeros((self.hidden_neurons, 1)))
 
         for i in range(self.l_hidden-1):
             D.append(np.zeros((self.hidden_neurons, self.hidden_neurons)))
+            bD.append(np.zeros((self.hidden_neurons, 1)))
         
         D.append(np.zeros((self.class_number, self.hidden_neurons)))
+        bD.append(np.zeros((self.class_number, 1)))
 
-        return D
+        return D, bD
 
     def randomize(self):
         return random.random() * (2 * self.epsilon) - self.epsilon
@@ -90,9 +99,15 @@ class Model:
         for i in range(1, len(self.layers)):
             self.layers[i]["z"] = np.add(np.matmul(self.layers[i-1]["weight"], self.layers[i-1]["a"]), self.layers[i-1]["bias"])
             self.layers[i]["a"] = self.activation(self.layers[i]["z"])
+            # print(self.layers[i]["a"])
 
         if self.use_softmax:
-            return np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
+            res = np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
+            # print(res)
+            e = self.v_exp(res)
+            es = np.sum(e)
+            div = np.vectorize(lambda x: x / es)
+            return div(e)
         else:
             return self.activation(np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"]))
     
@@ -106,13 +121,18 @@ class Model:
         divide_func = np.vectorize(lambda x: x / self.batch_size)
         while it < self.epochs:
             # shuffle input
-        
+
+            print(it, '/', self.epochs)
+            widgets = [progressbar.Percentage(), progressbar.Bar()]
+            bar = progressbar.ProgressBar(widgets=widgets, max_value=ncol).start()
+
             for offset in  range(0, ncol, self.batch_size):
-                self.D = self.initialize_d()
+                self.D, self.bD = self.initialize_d()
                 for col in range(0, self.batch_size):
-                    self.error = self.initialize_error()
                     if(offset + col >= ncol):
                         break
+                    
+                    self.error = self.initialize_error()
 
                     sample = self.input[:,offset + col]
                     starget = np.zeros((self.class_number, 1))
@@ -121,30 +141,39 @@ class Model:
 
                     output = self.FeedForward(sample)
                     self.BackPropagation(output, starget)
+
+                    bar.update(offset+col)
                 
                 # Take mean value
                 for d in self.D:
+                    divide_func(d)
+                for d in self.bD:
                     divide_func(d)
 
                 self.UpdateWeights()
 
 
-
+            bar.finish()
             it += 1
 
     def UpdateWeights(self):
         # print("update weights not implemented")
         for i in range(len(self.D)):
             self.layers[i]["weight"] = np.subtract(self.layers[i]["weight"], np.multiply(self.alpha, self.D[i]))
+            self.layers[i]["bias"] = np.subtract(self.layers[i]["bias"], np.multiply(self.alpha, self.bD[i]))
     
     def BackPropagation(self, output, target):
         output_error = np.subtract(output, target)
 
         self.error[-1] = np.add(self.error[-1], output_error)
+        # self.berror[-1] = self.error[-1]
         for i in range(len(self.layers)-1, 0, -1):
             txd = np.matmul(np.transpose(self.layers[i]["weight"]),self.error[i+1])
             txdxg = np.multiply(self.dactivation(self.layers[i]["z"]), txd)
             self.error[i] = np.add(self.error[i],txdxg)
+
+            # btxd = np.matmul(np.transpose(self.layers[i]["bias"]),self.berror[i+1])
+            # self.berror[i] = np.add(self.berror[i], btxd)
 
             # print(i)
             # print(np.transpose(self.layers[i]["weight"]).shape)
@@ -157,8 +186,15 @@ class Model:
         for k in range(len(self.layers)):
             a = self.layers[k]["a"]
             err = self.error[k+1]
+            # berr = self.berror[k+1]
+
+            # print(err.shape)
+            # print(self.bD[k].shape)
+            # print(err)
+
             for i in range(err.shape[0]):
                 self.D[k][i,:] = (a*err[i])[:,0]
+                self.bD[k][i] = err[i]
 
 
     def Predict(self, input, target):
