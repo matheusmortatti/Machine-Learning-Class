@@ -41,7 +41,7 @@ class Model:
 
         input_layer = {}
         input_layer["a"] = np.zeros((self.input.shape[0], 1))
-        input_layer["bias"] = np.zeros((self.hidden_neurons, 1))
+        input_layer["bias"] = np.fromfunction(init_weight_func, (self.hidden_neurons, 1))
         input_layer["weight"] = np.fromfunction(init_weight_func, (self.hidden_neurons, self.input.shape[0]))
 
         self.layers.append(input_layer)
@@ -49,7 +49,7 @@ class Model:
         for i in range(self.l_hidden-1):
             new_l = {}
             new_l["a"] = np.zeros((self.hidden_neurons, 1))
-            new_l["bias"] = np.ones((self.hidden_neurons, 1))
+            new_l["bias"] = np.fromfunction(init_weight_func, (self.hidden_neurons, 1))
             new_l["weight"] = np.fromfunction(init_weight_func, (self.hidden_neurons, self.hidden_neurons))
 
             self.layers.append(new_l)
@@ -57,7 +57,7 @@ class Model:
         self.class_number = np.amax(self.target)+1
         last_layer = {}
         last_layer["a"] = np.zeros((self.hidden_neurons, 1))
-        last_layer["bias"] = np.ones((self.class_number, 1))
+        last_layer["bias"] = np.fromfunction(init_weight_func, (self.class_number, 1))
         last_layer["weight"] = np.fromfunction(init_weight_func, (self.class_number, self.hidden_neurons))
 
         self.layers.append(last_layer)
@@ -101,26 +101,36 @@ class Model:
             self.layers[i]["a"] = self.activation(self.layers[i]["z"])
             # print(self.layers[i]["a"])
 
+        output_layer = np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
         if self.use_softmax:
-            res = np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
             # print(res)
-            e = self.v_exp(res)
+            e = self.v_exp(output_layer)
             es = np.sum(e)
             div = np.vectorize(lambda x: x / es)
             return div(e)
         else:
-            return self.activation(np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"]))
+            return self.activation(output_layer)
     
+
+    """
+    Perform Neural Network Training
+
+    :param input: numpy 2D array. each collumn is a different training example
+    :param target: numpy 1D array. Each value is the correct label for the training example
+    """
     def fit(self, input, target):
-        self.CreateNetwork(input, target)
         
         nrow = self.input.shape[0]
         ncol = self.input.shape[1]
+
+        if self.batch_size > ncol:
+            self.batch_size = ncol
 
         it = 0
         divide_func = np.vectorize(lambda x: x / self.batch_size)
         while it < self.epochs:
             # shuffle input
+            np.random.shuffle(self.input.T)
 
             print(it, '/', self.epochs)
             widgets = [progressbar.Percentage(), progressbar.Bar()]
@@ -128,7 +138,7 @@ class Model:
 
             for offset in  range(0, ncol, self.batch_size):
                 self.D, self.bD = self.initialize_d()
-                for col in range(0, self.batch_size):
+                for col in range(self.batch_size):
                     if(offset + col >= ncol):
                         break
                     
@@ -146,9 +156,9 @@ class Model:
                 
                 # Take mean value
                 for d in self.D:
-                    divide_func(d)
+                    d = divide_func(d)
                 for d in self.bD:
-                    divide_func(d)
+                    d = divide_func(d)
 
                 self.UpdateWeights()
 
@@ -157,40 +167,22 @@ class Model:
             it += 1
 
     def UpdateWeights(self):
-        # print("update weights not implemented")
         for i in range(len(self.D)):
-            self.layers[i]["weight"] = np.subtract(self.layers[i]["weight"], np.multiply(self.alpha, self.D[i]))
-            self.layers[i]["bias"] = np.subtract(self.layers[i]["bias"], np.multiply(self.alpha, self.bD[i]))
+            self.layers[i]["weight"] -= np.multiply(self.alpha, self.D[i])
+            self.layers[i]["bias"] -= np.multiply(self.alpha, self.bD[i])
     
     def BackPropagation(self, output, target):
         output_error = np.subtract(output, target)
-
         self.error[-1] = np.add(self.error[-1], output_error)
-        # self.berror[-1] = self.error[-1]
+
         for i in range(len(self.layers)-1, 0, -1):
             txd = np.matmul(np.transpose(self.layers[i]["weight"]),self.error[i+1])
             txdxg = np.multiply(self.dactivation(self.layers[i]["z"]), txd)
             self.error[i] = np.add(self.error[i],txdxg)
-
-            # btxd = np.matmul(np.transpose(self.layers[i]["bias"]),self.berror[i+1])
-            # self.berror[i] = np.add(self.berror[i], btxd)
-
-            # print(i)
-            # print(np.transpose(self.layers[i]["weight"]).shape)
-            # print(self.error[i+1].shape)
-            # print(txd.shape)
-            # print(txdxg.shape)
-            # print(self.error[i].shape)
-
         
         for k in range(len(self.layers)):
             a = self.layers[k]["a"]
             err = self.error[k+1]
-            # berr = self.berror[k+1]
-
-            # print(err.shape)
-            # print(self.bD[k].shape)
-            # print(err)
 
             for i in range(err.shape[0]):
                 self.D[k][i,:] = (a*err[i])[:,0]

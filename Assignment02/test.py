@@ -1,27 +1,55 @@
 import NeuralNetworkModel as NNM
 import numpy as np
 from sklearn.datasets import load_digits
+from sklearn.metrics import confusion_matrix
+import pandas
 
-data, target = load_digits(10, True)
-data = np.transpose(data)
+# Read and treat training dataset
+dataset_train = pandas.read_csv('fashion-mnist-dataset/fashion-mnist_train.csv').values #np.genfromtxt('fashion-mnist-dataset/fashion-mnist_train.csv', delimiter=',')
+y_true = dataset_train[:,0]
+dataset_train = np.delete(dataset_train, 0, 1).T
+dataset_train = dataset_train / dataset_train.max()
 
-half = len(target)//2
+# Read and treat test dataset
+dataset_test = pandas.read_csv('fashion-mnist-dataset/fashion-mnist_test.csv').values
+target_test = dataset_test[:,0]
+dataset_test = np.delete(dataset_test, 0, 1).T
+dataset_test = dataset_test / dataset_test.max()
 
-data_train = data[:,:half]
-target_train = target[:half]
-data_val = data[:,half:]
-target_val = target[half:]
+# dataset_train, y_true = load_digits(10, True)
+# dataset_train = np.transpose(dataset_train)
 
-model = NNM.Model(activation="ReLU", epochs=10000, alpha=0.00001, l_hidden=1, batch_size=1, use_softmax=True)
-print("training ...")
-model.fit(data_train, [target_train])
-print("training done")
+half = len(y_true)//2
 
-correct = 0
-for i in range(len(target_val)):
-    res = model.Predict(data_val[:,i],target_val[i])
+data_train = dataset_train[:,:half]
+target_train = y_true[:half]
+data_val = dataset_train[:,half:]
+target_val = y_true[half:]
 
-    if res["predicted_class"] == target_val[i]:
-        correct += 1
-    
-print("accurracy = ", correct / len(target_val))
+model = NNM.Model(activation="sigmoid", epochs=1, alpha=0.01, l_hidden=1, hidden_neurons=128, batch_size=1, use_softmax=False)
+model.CreateNetwork(data_train, [target_train])
+
+acc = [0]
+for i in range(10):
+    print("training ", i, '/10')
+    model.fit(data_train, [target_train])
+    print("training done")
+
+    correct = 0
+    y_pred = np.zeros((len(target_val)))
+    for i in range(len(target_val)):
+        res = model.Predict(data_val[:,i],target_val[i])
+
+        y_pred[i] = res["predicted_class"]
+        if res["predicted_class"] == target_val[i]:
+            correct += 1
+
+    accuracy = correct / len(target_val)
+    if accuracy < acc[-1]:
+        model.alpha /= 1.5
+
+    acc.append(accuracy)
+    print("accurracy = ", accuracy)
+    print(confusion_matrix(target_val, y_pred))
+
+print(acc)
