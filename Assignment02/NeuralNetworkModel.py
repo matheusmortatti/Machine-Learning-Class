@@ -16,7 +16,7 @@ def dsigmoid(val):
     return r*(1 - r)
 
 class Model:
-    def __init__(self, l_hidden = 1, hidden_neurons = 16, activation = "sigmoid", use_softmax = False, epochs = 10, batch_size = 1, alpha = 0.01):
+    def __init__(self, input, target, l_hidden = 1, hidden_neurons = 16, activation = "sigmoid", use_softmax = False, epochs = 10, batch_size = 1, alpha = 0.01):
         self.l_hidden = l_hidden
         self.hidden_neurons = hidden_neurons
         self.activation = np.vectorize(getattr(sys.modules[__name__],activation))
@@ -29,6 +29,8 @@ class Model:
         self.alpha = alpha
 
         self.epsilon = 1
+
+        self.CreateNetwork(input, target)
         
 
     def CreateNetwork(self, input, target):
@@ -151,7 +153,7 @@ class Model:
 
                     sample = self.input[:,offset + col]
                     starget = np.zeros((self.class_number, 1))
-                    target_class = self.target[:,offset + col][0]
+                    target_class = self.target[offset + col]
                     starget[target_class,0] = 1
 
                     output = self.FeedForward(sample)
@@ -194,9 +196,13 @@ class Model:
                 self.bD[k][i] = err[i]
 
 
-    def Predict(self, input, target):
-        res = {}
-        res["output"] = self.FeedForward(input)
-        res["predicted_class"] = np.argmax(res["output"])
+    def Predict(self, data, target):
+        y_pred = np.zeros((len(target)))
+        for i in range(len(target)):
+            res = {}
+            res["output"] = self.FeedForward(data[:,i])
+            res["predicted_class"] = np.argmax(res["output"])
 
-        return res
+            y_pred[i] = res["predicted_class"]
+
+        return y_pred
