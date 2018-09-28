@@ -3,7 +3,7 @@ import cmath as math
 import sys
 import os
 import random
-import progressbar
+from tqdm import tqdm
 
 def calculate_hfunction(features, thetas):
     h = sigmoid(np.matmul(thetas.T, features))
@@ -71,19 +71,15 @@ class Model:
         ncol = data.shape[1]
         
         while(iterations < self.epochs):
-            print('Epochs:', iterations+1, '/', self.epochs)
-            widgets = [progressbar.Percentage(), progressbar.Bar()]
-            bar = progressbar.ProgressBar(widgets=widgets, max_value=ncol).start()
 
             # Step through the dataset in chuncks
-            for col in range(0, ncol, self.batch_size):
+            for col in tqdm(range(0, ncol, self.batch_size), desc='Epochs: ' + str(iterations+1) + ' / ' + str(self.epochs)):
 
                 s = np.zeros((nrow, self.n_classes))
                 # We add every row of the dataset to the error calculation (Batch)
                 for offset in range(self.batch_size):
                     if col + offset >= m:
                         break
-                    bar.update(col+offset)
                     
                     sample = data[:,offset + col]
                     starget = np.zeros((self.n_classes, 1))
@@ -115,7 +111,5 @@ class Model:
             #     itr_numbers.append(iterations)
                 
             iterations = iterations + 1
-
-            bar.finish()
         
         return thetas

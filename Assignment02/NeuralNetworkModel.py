@@ -3,7 +3,7 @@ import cmath as math
 import sys
 import os
 import random
-import progressbar
+from tqdm import tqdm
 
 def ReLU(val):
     return max(0, val)
@@ -137,13 +137,8 @@ class Model:
             np.random.shuffle(self.input.T)
             np.random.set_state(rng_state)
             np.random.shuffle(self.target.T)
-            
 
-            print(it, '/', self.epochs)
-            widgets = [progressbar.Percentage(), progressbar.Bar()]
-            bar = progressbar.ProgressBar(widgets=widgets, max_value=ncol).start()
-
-            for offset in  range(0, ncol, self.batch_size):
+            for offset in tqdm(range(0, ncol, self.batch_size), desc='Epochs: ' + str(it+1) + ' / ' + str(self.epochs)):
                 self.D, self.bD = self.initialize_d()
                 for col in range(self.batch_size):
                     if(offset + col >= ncol):
@@ -158,8 +153,6 @@ class Model:
 
                     output = self.FeedForward(sample)
                     self.BackPropagation(output, starget)
-
-                    bar.update(offset+col)
                 
                 # Take mean value
                 for d in self.D:
@@ -169,8 +162,6 @@ class Model:
 
                 self.UpdateWeights()
 
-
-            bar.finish()
             it += 1
 
     def UpdateWeights(self):

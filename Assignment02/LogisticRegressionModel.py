@@ -3,7 +3,7 @@ import cmath as math
 import sys
 import os
 import random
-import progressbar
+from tqdm import tqdm
 
 def calculate_hfunction(features, thetas):
     h = sigmoid(np.matmul(thetas.T, features))
@@ -40,9 +40,10 @@ class Model:
             self.thetas_model.append(np.random.uniform(-1, 1, self.data.shape[0]))
         
     def Fit(self):
-        
         for model in range(self.n_classes):
-            print('Training class', model, 'of', self.n_classes)
+            print()
+            print('Training class', model+1, 'of', self.n_classes)
+            print()
             self.thetas_model[model] = self.logistic_regression(self.data, self.target[model,:], self.thetas_model[model])
             
 
@@ -87,19 +88,16 @@ class Model:
         ncol = data.shape[1]
         
         while(iterations < self.epochs):
-            print('Epochs:', iterations+1, '/', self.epochs)
-            widgets = [progressbar.Percentage(), progressbar.Bar()]
-            bar = progressbar.ProgressBar(widgets=widgets, max_value=ncol).start()
+            # print('Epochs:', iterations+1, '/', self.epochs)
+
             # Step through the dataset in chuncks
-            for col in range(0, ncol, self.batch_size):
+            for col in tqdm(range(0, ncol, self.batch_size), desc='Epochs: ' + str(iterations+1) + ' / ' + str(self.epochs)):
 
                 s = np.zeros((nrow))
                 # We add every row of the dataset to the error calculation (Batch)
                 for offset in range(self.batch_size):
                     if col + offset >= m:
                         break
-
-                    bar.update(col + offset)
                     
                     sample = data[:,offset + col]
                     starget = target[offset + col]
@@ -109,7 +107,7 @@ class Model:
 
                 # Updating the new thetas vector values
                 thetas = thetas - ((self.alpha / self.batch_size) * s)
-            bar.finish()
+
             # keep a new cost value
             if iterations % j_step == 0:
                 cost = calculate_cost_function(thetas, data, target)
