@@ -130,7 +130,12 @@ class Model:
         divide_func = np.vectorize(lambda x: x / self.batch_size)
         while it < self.epochs:
             # shuffle input
+            
+            rng_state = np.random.get_state()
             np.random.shuffle(self.input.T)
+            np.random.set_state(rng_state)
+            np.random.shuffle(self.target.T)
+            
 
             print(it, '/', self.epochs)
             widgets = [progressbar.Percentage(), progressbar.Bar()]

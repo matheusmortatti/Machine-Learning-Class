@@ -2,6 +2,7 @@ import NeuralNetworkModel as NNM
 import numpy as np
 from sklearn.datasets import load_digits
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
 import pandas
 
 # Read and treat training dataset
@@ -16,8 +17,8 @@ target_test = dataset_test[:,0]
 dataset_test = np.delete(dataset_test, 0, 1).T
 dataset_test = dataset_test / dataset_test.max()
 
-# dataset_train, y_true = load_digits(10, True)
-# dataset_train = np.transpose(dataset_train)
+dataset_train, y_true = load_digits(10, True)
+dataset_train = np.transpose(dataset_train)
 
 half = len(y_true)//2
 
@@ -30,7 +31,7 @@ model = NNM.Model(activation="sigmoid", epochs=1, alpha=0.01, l_hidden=1, hidden
 model.CreateNetwork(data_train, [target_train])
 
 acc = [0]
-for i in range(10):
+for i in range(50):
     print("training ", i, '/10')
     model.fit(data_train, [target_train])
     print("training done")
@@ -46,10 +47,11 @@ for i in range(10):
 
     accuracy = correct / len(target_val)
     if accuracy < acc[-1]:
-        model.alpha /= 1.5
+        model.alpha /= 2
 
     acc.append(accuracy)
     print("accurracy = ", accuracy)
     print(confusion_matrix(target_val, y_pred))
+    print(classification_report(target_val, y_pred))
 
 print(acc)
