@@ -25,53 +25,37 @@ class Model:
         self.batch_size = batch_size
         self.alpha = alpha
         self.n_classes = np.amax(target)+1
+
+        self.v_exp = np.vectorize(math.exp)
         
         self.data = data
 
         n_examples = data.shape[1]
-        self.target = np.zeros((self.n_classes, n_examples))
-
-        for col in range(n_examples):
-            self.target[target[col],col] = 1
+        self.target = target
 
         # Create one array of thetas for each possible class
-        self.thetas_model = []
-        for model in range (self.n_classes):
-            self.thetas_model.append(np.random.uniform(-1, 1, self.data.shape[0]))
+        self.thetas_model = np.random.uniform(-1, 1, (self.data.shape[0],self.n_classes))
         
     def Fit(self):
-        
-        for model in range(self.n_classes):
-            print('Training class', model, 'of', self.n_classes)
-            self.thetas_model[model] = self.logistic_regression(self.data, self.target[model,:], self.thetas_model[model])
+        self.thetas_model = self.softmax_regression(self.data, self.target, self.thetas_model)
             
 
     def Predict(self, data, target):
         sig = np.vectorize(sigmoid)
-        cl = np.vectorize(lambda x: 1 if x.real > 0.5 else 0)
-
-        n_examples = data.shape[1]
-        target_pred = np.zeros((self.n_classes, n_examples))
-
-        for col in range(n_examples):
-            target_pred[target[col],col] = 1
         
-        res = np.zeros(target.shape)
-        classes = np.zeros(target.shape)
-        for i in range(self.n_classes):
+        y_pred = np.zeros((len(target)))
+        for i in range(data.shape[1]):
+            sample = data[:,i]
             
-            t = self.thetas_model[i]
-            m = target_pred[i,:]
-            cand = (sig(np.matmul(data.T, t)))
 
-            for k in range(cand.shape[0]):
-                if res[k] < cand[k]:
-                    res[k] = cand[k].real
-                    classes[k] = i
-        return classes
+            res = sig(np.matmul(sample.T, self.thetas_model))
+            cl = np.argmax(res)
 
+            y_pred[i] = cl
 
-    def logistic_regression(self, data, target, thetas, j_step=1):
+        return y_pred
+
+    def softmax_regression(self, data, target, thetas, j_step=1):
         m          = data.shape[1]
         iterations = 0
 
@@ -90,40 +74,48 @@ class Model:
             print('Epochs:', iterations+1, '/', self.epochs)
             widgets = [progressbar.Percentage(), progressbar.Bar()]
             bar = progressbar.ProgressBar(widgets=widgets, max_value=ncol).start()
+
             # Step through the dataset in chuncks
             for col in range(0, ncol, self.batch_size):
 
-                s = np.zeros((nrow))
+                s = np.zeros((nrow, self.n_classes))
                 # We add every row of the dataset to the error calculation (Batch)
                 for offset in range(self.batch_size):
                     if col + offset >= m:
                         break
-
-                    bar.update(col + offset)
+                    bar.update(col+offset)
                     
                     sample = data[:,offset + col]
-                    starget = target[offset + col]
+                    starget = np.zeros((self.n_classes, 1))
+                    target_class = self.target[offset + col]
+                    starget[target_class,0] = 1
 
-                    h = calculate_hfunction(sample, thetas)
-                    s = s + (h - starget) * sample
+                    e = self.v_exp(np.matmul(thetas.T,sample))
+                    es = np.sum(e)
+                    div = np.vectorize(lambda x: x / es)
+
+                    h = div(e)[np.newaxis].T
+                    s = s + np.matmul((h - starget),sample[np.newaxis]).T
 
                 # Updating the new thetas vector values
                 thetas = thetas - ((self.alpha / self.batch_size) * s)
-            bar.finish()
+                
             # keep a new cost value
-            if iterations % j_step == 0:
-                cost = calculate_cost_function(thetas, data, target)
-                if len(costs)>0 and cost > costs[-1]:
-                    self.alpha /= 1.001
-                    if retryCount < retryMax:
-                        retryCount += 1
-                    else:
-                        iterations = max_iterations
-                else:
-                    retryCount = 0
-                costs.append(cost)
-                itr_numbers.append(iterations)
+            # if iterations % j_step == 0:
+            #     cost = calculate_cost_function(thetas, data, target)
+            #     if len(costs)>0 and cost > costs[-1]:
+            #         self.alpha /= 1.001
+            #         if retryCount < retryMax:
+            #             retryCount += 1
+            #         else:
+            #             iterations = max_iterations
+            #     else:
+            #         retryCount = 0
+            #     costs.append(cost)
+            #     itr_numbers.append(iterations)
                 
             iterations = iterations + 1
+
+            bar.finish()
         
         return thetas
