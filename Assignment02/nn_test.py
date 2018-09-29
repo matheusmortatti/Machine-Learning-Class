@@ -32,7 +32,7 @@ model = NNM.Model(data_train, target_train, activation="sigmoid", epochs=1, alph
 acc = [0]
 for i in range(50):
     print("training ", i, '/10')
-    model.fit(data_train, target_train)
+    model.fit()
     print("training done")
 
     y_pred = model.Predict(data_val, target_val)

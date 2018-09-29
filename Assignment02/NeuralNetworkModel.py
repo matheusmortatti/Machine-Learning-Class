@@ -120,7 +120,7 @@ class Model:
     :param input: numpy 2D array. each collumn is a different training example
     :param target: numpy 1D array. Each value is the correct label for the training example
     """
-    def fit(self, input, target):
+    def fit(self):
         
         nrow = self.input.shape[0]
         ncol = self.input.shape[1]
