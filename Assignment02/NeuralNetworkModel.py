@@ -105,7 +105,6 @@ class Model:
 
         output_layer = np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
         if self.use_softmax:
-            # print(res)
             e = self.v_exp(output_layer)
             es = np.sum(e)
             div = np.vectorize(lambda x: x / es)
