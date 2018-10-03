@@ -129,6 +129,7 @@ class Model:
 
         it = 0
         divide_func = np.vectorize(lambda x: x / self.batch_size)
+        self.error = self.initialize_error()
         while it < self.epochs:
             # shuffle input
             
@@ -142,8 +143,6 @@ class Model:
                 for col in range(self.batch_size):
                     if(offset + col >= ncol):
                         break
-                    
-                    self.error = self.initialize_error()
 
                     sample = self.input[:,offset + col]
                     starget = np.zeros((self.class_number, 1))
@@ -170,20 +169,14 @@ class Model:
     
     def BackPropagation(self, output, target):
         output_error = np.subtract(output, target)
-        self.error[-1] = np.add(self.error[-1], output_error)
+        self.error[-1] = output_error
 
         for i in range(len(self.layers)-1, 0, -1):
-            txd = np.matmul(np.transpose(self.layers[i]["weight"]),self.error[i+1])
-            txdxg = np.multiply(self.dactivation(self.layers[i]["z"]), txd)
-            self.error[i] = np.add(self.error[i],txdxg)
+            self.error[i] = np.multiply(self.dactivation(self.layers[i]["z"]), np.matmul(np.transpose(self.layers[i]["weight"]),self.error[i+1]))
         
         for k in range(len(self.layers)):
-            a = self.layers[k]["a"]
-            err = self.error[k+1]
-
-            for i in range(err.shape[0]):
-                self.D[k][i,:] = (a*err[i])[:,0]
-                self.bD[k][i] = err[i]
+            self.D[k] += np.float64(np.multiply.outer(self.layers[k]["a"].flatten(),  self.error[k+1].flatten())).T
+            self.bD[k] += np.float64(self.error[k+1])
 
 
     def Predict(self, data, target):

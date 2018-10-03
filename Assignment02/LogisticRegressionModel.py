@@ -10,14 +10,6 @@ def calculate_hfunction(features, thetas):
     return h
 def sigmoid(val):
     return 1 / (1 + math.exp(-val))
-def calculate_cost_function(thetas, data, target):
-    m = data.shape[1]
-
-    res = np.matmul(data.T, thetas)
-    
-    s = np.sum((res-target)*(res-target))
-    
-    return (1/(2*m)) * (s)
 
 class Model:
     def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01):
@@ -41,9 +33,7 @@ class Model:
         
     def Fit(self):
         for model in range(self.n_classes):
-            print()
-            print('Training class', model+1, 'of', self.n_classes)
-            print()
+            tqdm.write('Training class ' + str(model+1) + ' / ' + str(self.n_classes))
             self.thetas_model[model] = self.logistic_regression(self.data, self.target[model,:], self.thetas_model[model])
             
 
@@ -72,16 +62,9 @@ class Model:
         return classes
 
 
-    def logistic_regression(self, data, target, thetas, j_step=1):
+    def logistic_regression(self, data, target, thetas):
         m          = data.shape[1]
         iterations = 0
-
-        # After j_step iterations, compute cost function
-        costs       = []
-        itr_numbers = []
-        
-        retryCount = 0
-        retryMax = 1000
 
         #startTime = current_time()
         nrow = data.shape[0]
@@ -107,20 +90,6 @@ class Model:
 
                 # Updating the new thetas vector values
                 thetas = thetas - ((self.alpha / self.batch_size) * s)
-
-            # keep a new cost value
-            if iterations % j_step == 0:
-                cost = calculate_cost_function(thetas, data, target)
-                if len(costs)>0 and cost > costs[-1]:
-                    self.alpha /= 1.001
-                    if retryCount < retryMax:
-                        retryCount += 1
-                    else:
-                        iterations = max_iterations
-                else:
-                    retryCount = 0
-                costs.append(cost)
-                itr_numbers.append(iterations)
                 
             iterations = iterations + 1
         
