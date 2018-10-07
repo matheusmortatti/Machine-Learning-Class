@@ -20,11 +20,13 @@ def calculate_cost_function(thetas, data, target):
     return (1/(2*m)) * (s)
 
 class Model:
-    def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01):
+    def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01, decay = 0.5):
         self.epochs = epochs
         self.batch_size = batch_size
         self.alpha = alpha
         self.n_classes = np.amax(target)+1
+
+        self.decay = decay
 
         self.v_exp = np.vectorize(math.exp)
         
@@ -44,7 +46,7 @@ class Model:
         sig = np.vectorize(sigmoid)
         
         y_pred = np.zeros((len(target)))
-        for i in range(data.shape[1]):
+        for i in tqdm(range(data.shape[1]), desc="Predicting"):
             sample = data[:,i]
             
 
@@ -96,20 +98,7 @@ class Model:
                 # Updating the new thetas vector values
                 thetas = thetas - ((self.alpha / self.batch_size) * s)
                 
-            # keep a new cost value
-            # if iterations % j_step == 0:
-            #     cost = calculate_cost_function(thetas, data, target)
-            #     if len(costs)>0 and cost > costs[-1]:
-            #         self.alpha /= 1.001
-            #         if retryCount < retryMax:
-            #             retryCount += 1
-            #         else:
-            #             iterations = max_iterations
-            #     else:
-            #         retryCount = 0
-            #     costs.append(cost)
-            #     itr_numbers.append(iterations)
-                
             iterations = iterations + 1
+            self.alpha *= 1/(1 + self.decay*iterations)
         
         return thetas

@@ -27,9 +27,8 @@ target_train = y_true[:half]
 data_val = dataset_train[:,half:]
 target_val = y_true[half:]
 
-model = NNM.Model(data_train, target_train, activation="sigmoid", epochs=1, alpha=0.01, l_hidden=2, hidden_neurons=512, batch_size=1, use_softmax=False)
+model = NNM.Model(data_train, target_train, activation="sigmoid", epochs=1, alpha=0.1, l_hidden=2, hidden_neurons=128, batch_size=1, use_softmax=False, epsilon = 0.5)
 
-decay = 0.5
 for i in range(10):
     print("training ", i, '/10')
     model.fit()
@@ -39,4 +38,3 @@ for i in range(10):
     
     print(confusion_matrix(target_val, y_pred))
     print(classification_report(target_val, y_pred))
-    model.alpha *= 1/(1 + decay * i)

@@ -12,11 +12,12 @@ def sigmoid(val):
     return 1 / (1 + math.exp(-val))
 
 class Model:
-    def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01):
+    def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01, decay = 0.5):
         self.epochs = epochs
         self.batch_size = batch_size
         self.alpha = alpha
         self.n_classes = np.amax(target)+1
+        self.decay = decay
         
         self.data = data
 
@@ -33,8 +34,8 @@ class Model:
         
     def Fit(self):
         for model in range(self.n_classes):
-            tqdm.write('Training class ' + str(model+1) + ' / ' + str(self.n_classes))
-            self.thetas_model[model] = self.logistic_regression(self.data, self.target[model,:], self.thetas_model[model])
+            # tqdm.write('Training class ' + str(model+1) + ' / ' + str(self.n_classes))
+            self.thetas_model[model] = self.logistic_regression(self.data, self.target[model,:], self.thetas_model[model], model)
             
 
     def Predict(self, data, target):
@@ -55,14 +56,14 @@ class Model:
             m = target_pred[i,:]
             cand = (sig(np.matmul(data.T, t)))
 
-            for k in range(cand.shape[0]):
+            for k in tqdm(range(cand.shape[0]), desc="Predicting Class: " + str(i+1) + " / " + str(self.n_classes)):
                 if res[k] < cand[k]:
                     res[k] = cand[k].real
                     classes[k] = i
         return classes
 
 
-    def logistic_regression(self, data, target, thetas):
+    def logistic_regression(self, data, target, thetas, n_class):
         m          = data.shape[1]
         iterations = 0
 
@@ -71,10 +72,9 @@ class Model:
         ncol = data.shape[1]
         
         while(iterations < self.epochs):
-            # print('Epochs:', iterations+1, '/', self.epochs)
 
             # Step through the dataset in chuncks
-            for col in tqdm(range(0, ncol, self.batch_size), desc='Epochs: ' + str(iterations+1) + ' / ' + str(self.epochs)):
+            for col in tqdm(range(0, ncol, self.batch_size), desc="Class: " + str(n_class) + " / " + str(self.n_classes) + ' Epochs: ' + str(iterations+1) + ' / ' + str(self.epochs)):
 
                 s = np.zeros((nrow))
                 # We add every row of the dataset to the error calculation (Batch)
@@ -92,5 +92,6 @@ class Model:
                 thetas = thetas - ((self.alpha / self.batch_size) * s)
                 
             iterations = iterations + 1
+            self.alpha *= 1/(1 + self.decay*iterations)
         
         return thetas
