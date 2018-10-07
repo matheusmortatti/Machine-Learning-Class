@@ -20,6 +20,17 @@ def calculate_cost_function(thetas, data, target):
     return (1/(2*m)) * (s)
 
 class Model:
+
+    """
+    Class Constructor
+
+    :param input: numpy 2D array. each collumn is a different data set example
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    :param epochs: integer. Number of epochs to use in training
+    :param batch_size: integer. How many training examples to use to update the weights
+    :param alpha: float. Learning Rate Param
+    :param decay: float. By how quickly the network should decrease alpha param
+    """
     def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01, decay = 0.5):
         self.epochs = epochs
         self.batch_size = batch_size
@@ -38,10 +49,18 @@ class Model:
         # Create one array of thetas for each possible class
         self.thetas_model = np.random.uniform(-1, 1, (self.data.shape[0],self.n_classes))
         
+    """
+    Perform Neural Network Training
+    """
     def Fit(self):
         self.thetas_model = self.softmax_regression(self.data, self.target, self.thetas_model)
             
+    """
+    Perform Neural Network Prediction
 
+    :param data: numpy 2D array. each collumn is a different example to predict
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    """
     def Predict(self, data, target):
         sig = np.vectorize(sigmoid)
         
@@ -57,7 +76,14 @@ class Model:
 
         return y_pred
 
-    def softmax_regression(self, data, target, thetas, j_step=1):
+    """
+    Perform Softmax Regression Training
+
+    :param data: numpy 2D array. each collumn is a different example to predict
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    :param theta: numpy 2D array. Each collumn is a different set of weights
+    """
+    def softmax_regression(self, data, target, thetas):
         m          = data.shape[1]
         iterations = 0
 

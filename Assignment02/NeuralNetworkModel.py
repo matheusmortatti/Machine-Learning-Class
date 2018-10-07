@@ -19,6 +19,22 @@ def current_time():
     return int(round(time.time() * 1000))
 
 class Model:
+
+    """
+    Class Constructor
+
+    :param input: numpy 2D array. each collumn is a different data set example
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    :param l_hidden: integer. Number of hidden layers
+    :param hidden_neurons: integer. Number of neurons in each hidden layer
+    :param activation: string. Name of the activation function
+    :param use_softmax: bool. If true, uses softmmax function at the output of the network
+    :param epochs: integer. Number of epochs to use in training
+    :param batch_size: integer. How many training examples to use to update the weights
+    :param alpha: float. Learning Rate Param
+    :param decay: float. By how quickly the network should decrease alpha param
+    :param epsilon: float. Weights will be initialized between -epsilon and +epsilon
+    """
     def __init__(self, input, target, l_hidden = 1, hidden_neurons = 16, activation = "sigmoid", use_softmax = False, epochs = 10, batch_size = 1, alpha = 0.01, decay=0.5, epsilon=1):
         self.l_hidden = l_hidden
         self.hidden_neurons = hidden_neurons
@@ -36,7 +52,14 @@ class Model:
 
         self.CreateNetwork(input, target)
         
+    """
+    Perform Neural Network Creation
 
+    Initializes all the parameters needed to use and traing the network
+
+    :param input: numpy 2D array. each collumn is a different data set example
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    """
     def CreateNetwork(self, input, target):
         self.layers = []
 
@@ -69,59 +92,9 @@ class Model:
 
         self.layers.append(last_layer)
     
-    def initialize_error(self):
-        error = []
-
-        error.append(np.zeros((self.input.shape[0], 1)))
-
-        for i in range(self.l_hidden):
-            error.append(np.zeros((self.hidden_neurons, 1)))
-        
-        error.append(np.zeros((self.class_number,1)))
-
-        return error
-    
-    def initialize_d(self):
-        D = []
-        bD = []
-
-        D.append(np.zeros((self.hidden_neurons, self.input.shape[0])))
-        bD.append(np.zeros((self.hidden_neurons, 1)))
-
-        for i in range(self.l_hidden-1):
-            D.append(np.zeros((self.hidden_neurons, self.hidden_neurons)))
-            bD.append(np.zeros((self.hidden_neurons, 1)))
-        
-        D.append(np.zeros((self.class_number, self.hidden_neurons)))
-        bD.append(np.zeros((self.class_number, 1)))
-
-        return D, bD
-
-    def randomize(self):
-        return random.random() * (2 * self.epsilon) - self.epsilon
-
-    def FeedForward(self, input):
-        self.layers[0]["a"] = np.transpose(np.array([input]))
-
-        for i in range(1, len(self.layers)):
-            np.copyto(self.layers[i]["z"], np.add(np.matmul(self.layers[i-1]["weight"], self.layers[i-1]["a"]), self.layers[i-1]["bias"]))
-            np.copyto(self.layers[i]["a"], self.activation(self.layers[i]["z"]))
-
-        output_layer = np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
-        if self.use_softmax:
-            e = self.v_exp(output_layer).real
-            es = np.sum(e).real
-            div = np.vectorize(lambda x: x / es)
-            return e / es
-        else:
-            return self.activation(output_layer)
-    
 
     """
     Perform Neural Network Training
-
-    :param input: numpy 2D array. each collumn is a different training example
-    :param target: numpy 1D array. Each value is the correct label for the training example
     """
     def fit(self):
         
@@ -173,11 +146,33 @@ class Model:
             it += 1
             self.alpha *= 1/(1 + self.decay*it)
 
-    def UpdateWeights(self):
-        for i in range(len(self.D)):
-            self.layers[i]["weight"] -= np.multiply(self.alpha, self.D[i])
-            self.layers[i]["bias"] -= np.multiply(self.alpha, self.bD[i])
+    """
+    Perform Neural Network Feed Forward
+
+    :param input: numpy 2D array. each collumn is a different example from the dataset
+    """
+    def FeedForward(self, input):
+        self.layers[0]["a"] = np.transpose(np.array([input]))
+
+        for i in range(1, len(self.layers)):
+            np.copyto(self.layers[i]["z"], np.add(np.matmul(self.layers[i-1]["weight"], self.layers[i-1]["a"]), self.layers[i-1]["bias"]))
+            np.copyto(self.layers[i]["a"], self.activation(self.layers[i]["z"]))
+
+        output_layer = np.add(np.matmul(self.layers[-1]["weight"], self.layers[-1]["a"]), self.layers[-1]["bias"])
+        if self.use_softmax:
+            e = self.v_exp(output_layer).real
+            es = np.sum(e).real
+            div = np.vectorize(lambda x: x / es)
+            return e / es
+        else:
+            return self.activation(output_layer)
     
+    """
+    Perform Neural Network Back Propagation
+
+    :param output: numpy 1D array. each collumn is a different class outputed by Feed Forward
+    :param target: numpy 1D array. Each value is the correct label for the training example
+    """
     def BackPropagation(self, output, target):
         np.copyto(self.error[-1], np.subtract(output, target))
 
@@ -187,8 +182,23 @@ class Model:
         for k in range(len(self.layers)):
             self.D[k] += (self.error[k+1] * self.layers[k]["a"].T)
             self.bD[k] += (self.error[k+1])
+    
+
+    """
+    Makes arithmetic to update weight values
+    """
+    def UpdateWeights(self):
+        for i in range(len(self.D)):
+            self.layers[i]["weight"] -= np.multiply(self.alpha, self.D[i])
+            self.layers[i]["bias"] -= np.multiply(self.alpha, self.bD[i])
 
 
+    """
+    Perform Neural Network Prediction
+
+    :param data: numpy 2D array. each collumn is a different example to predict
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    """
     def Predict(self, data, target):
         y_pred = np.zeros((len(target)))
         for i in tqdm(range(len(target)), desc = "Predicting"):
@@ -199,3 +209,34 @@ class Model:
             y_pred[i] = res["predicted_class"]
 
         return y_pred
+
+    """
+    PRIVATE FUNCTIONS
+    """
+    def initialize_error(self):
+        error = []
+
+        error.append(np.zeros((self.input.shape[0], 1)))
+
+        for i in range(self.l_hidden):
+            error.append(np.zeros((self.hidden_neurons, 1)))
+        
+        error.append(np.zeros((self.class_number,1)))
+
+        return error
+    
+    def initialize_d(self):
+        D = []
+        bD = []
+
+        D.append(np.zeros((self.hidden_neurons, self.input.shape[0])))
+        bD.append(np.zeros((self.hidden_neurons, 1)))
+
+        for i in range(self.l_hidden-1):
+            D.append(np.zeros((self.hidden_neurons, self.hidden_neurons)))
+            bD.append(np.zeros((self.hidden_neurons, 1)))
+        
+        D.append(np.zeros((self.class_number, self.hidden_neurons)))
+        bD.append(np.zeros((self.class_number, 1)))
+
+        return D, bD

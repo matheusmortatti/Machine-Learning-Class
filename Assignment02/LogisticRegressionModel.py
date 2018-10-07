@@ -12,7 +12,17 @@ def sigmoid(val):
     return 1 / (1 + math.exp(-val))
 
 class Model:
-    def __init__(self, data, target, epochs = 10, batch_size = 1, alpha = 0.01, decay = 0.5):
+    """
+    Class Constructor
+
+    :param input: numpy 2D array. each collumn is a different data set example
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    :param epochs: integer. Number of epochs to use in training
+    :param batch_size: integer. How many training examples to use to update the weights
+    :param alpha: float. Learning Rate Param
+    :param decay: float. By how quickly the network should decrease alpha param
+    """
+    def __init__(self, data, target, epochs = 1, batch_size = 1, alpha = 0.01, decay = 0.5):
         self.epochs = epochs
         self.batch_size = batch_size
         self.alpha = alpha
@@ -32,12 +42,21 @@ class Model:
         for model in range (self.n_classes):
             self.thetas_model.append(np.random.uniform(-1, 1, self.data.shape[0]))
         
+    """
+    Perform Neural Network Training
+    """
     def Fit(self):
         for model in range(self.n_classes):
             # tqdm.write('Training class ' + str(model+1) + ' / ' + str(self.n_classes))
             self.thetas_model[model] = self.logistic_regression(self.data, self.target[model,:], self.thetas_model[model], model)
             
 
+    """
+    Perform Neural Network Prediction
+
+    :param data: numpy 2D array. each collumn is a different example to predict
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    """
     def Predict(self, data, target):
         sig = np.vectorize(sigmoid)
         cl = np.vectorize(lambda x: 1 if x.real > 0.5 else 0)
@@ -62,7 +81,14 @@ class Model:
                     classes[k] = i
         return classes
 
+    
+    """
+    Perform Softmax Regression Training
 
+    :param data: numpy 2D array. each collumn is a different example to predict
+    :param target: numpy 1D array. Each value is the correct label for the data set given
+    :param theta: numpy 2D array. Each collumn is a different set of weights
+    """
     def logistic_regression(self, data, target, thetas, n_class):
         m          = data.shape[1]
         iterations = 0
