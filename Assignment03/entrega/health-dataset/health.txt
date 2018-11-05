@@ -1,4 +1,3 @@
-id|publish_date|headline_text
 576880531301801984|Sat Mar 14 23:00:11 +0000 2015|An abundance of online info can turn us into e-hypochondriacs. Or, worse, lead us to neglect getting the care we need
 576820122666471424|Sat Mar 14 19:00:08 +0000 2015|A plant-based diet that incorporates fish may be the key to preventing colorectal cancers:
 576744652717461504|Sat Mar 14 14:00:15 +0000 2015|It doesn't take much to damage your hearing at a sports bar or nightclub. That's why a billion people are at risk.
