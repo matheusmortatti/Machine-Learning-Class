@@ -1,0 +1,1 @@
+To run the experiment, open the ipython notebook included in this folder. Place the dataset folder (health-dataset) in this folder (it was too big to upload).
